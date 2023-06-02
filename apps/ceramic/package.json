@@ -1,0 +1,29 @@
+{
+  "name": "ceramic",
+  "version": "1.0.0",
+  "main": "generated/*",
+  "types": "generated/*",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "npx @ceramicnetwork/cli daemon",
+    "generate-graphql-schema": "composedb graphql:schema ./generated/runtime-composite.json --output=./generated/schema.graphql",
+    "start-graphql-playground": "source .env && composedb graphql:server --graphiql --port=5001 ./generated/runtime-composite.json --did-private-key=$DID_PRIVATE_KEY -c $CERAMIC_API_URL",
+    "generate-definitions": "source .env && composedb composite:compile ./generated/denoted-composite.json ../web/src/composedb/definition.ts -c $CERAMIC_API_URL",
+    "compile-composite": "source .env && composedb composite:compile ./generated/denoted-composite.json ./generated/runtime-composite.json -c $CERAMIC_API_URL",
+    "deploy-models": "npx ts-node --esm src/deploy-models.ts && yarn compile-composite && yarn generate-definitions && yarn generate-graphql-schema"
+  },
+  "devDependencies": {
+    "@ceramicnetwork/cli": "2.29.0",
+    "@composedb/devtools": "0.4.0",
+    "@composedb/devtools-node": "0.4.0",
+    "@composedb/types": "0.4.0",
+    "ts-node": "10.9.1"
+  },
+  "dependencies": {
+    "@ceramicnetwork/http-client": "2.21.0",
+    "@composedb/cli": "0.4.0",
+    "@didtools/pkh-ethereum": "0.1.0",
+    "did-session": "2.0.0"
+  }
+}
