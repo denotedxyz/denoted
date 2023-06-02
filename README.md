@@ -1,81 +1,38 @@
-# Turborepo starter
+# denoted
 
-This is an official starter Turborepo.
+**A knowledge management editor that visualizes on-chain data**
 
-## Using this example
+Denoted is a knowledge management editor that builds on decentralized storage allowing users to own their data and respect their privacy.
+Through open integrations users will be able to collate & visualize information from a wide variety of sources.
 
-Run the following command:
+The vision is to create a platform that prioritizes user-focused data sovereignty, openness, interactivity, and composability, fundamentally transforming how we manage and share knowledge.
 
-```sh
-npx create-turbo@latest
-```
+- 🚀 Clean and easy WYSIWYG-editor
+- ✨ Support for multiple API integrations including Covalent, Subgraph, and Lens, etc.
+- 💾 Saved and retrieved on ComposeDB through your decentralized identity (DID)
 
-## What's inside?
+## About
 
-This Turborepo includes the following packages/apps:
+We built a WYSIWYG-editor with a clean and simple design to use immediately for any user. You start by connecting to the app through Web3Auth. When you’re connected, you’ll be able to start creating. Whenever you’re making that slash, you’re fetching from one of our many integrations. We have integrations built for Covalent, Subgraph, Tally, Dune, and Lens, etc. Lastly, the data is saved and retrieved in ComposeDB through your decentralized identifier.
 
-### Apps and Packages
+**Live on [https://denoted.xyz/](https://denoted.xyz/)**
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `ui`: a stub React component library shared by both `web` and `docs` applications
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
+## Contribution
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+### Custom Command
 
-### Utilities
+If you want to add a custom command, see _Adding a command_ in [web/README](https://github.com/ericzakariasson/denoted/blob/main/apps/web/README.md).
 
-This Turborepo has some additional tools already setup for you:
+## Architecture
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+<img width="1760" alt="denoted architecture" src="https://user-images.githubusercontent.com/25622412/222936136-07acfc97-d4ee-42a2-8677-22fe0ed90b38.png">
 
-### Build
+## Tech stack
 
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm dev
-```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+- Package-Manager: `yarn`
+- Monorepo Tooling: `turborepo`
+- Frontend: `next`
+  - Contract Interactions: `wagmi`, `rainbowkit`, `web3auth`
+  - Styling: `tailwind`
+- Miscellaneous:
+  - Linting & Formatting: `eslint`, `prettier`
