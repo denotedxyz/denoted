@@ -1,4 +1,4 @@
-import { JSONContent } from "@tiptap/react";
+import { ComposeClient } from "@composedb/client";
 import {
   CreatePageInput,
   DID,
@@ -13,6 +13,9 @@ import {
   importEncryptionKey,
 } from "../lib/crypto";
 import { getStoredEncryptionKey, storeEncryptionKey } from "../lib/lit";
+import { LitNodeClient } from "@lit-protocol/lit-node-client";
+
+type JSONContent = any;
 
 export function serializePageNode(node: JSONContent): PageNode {
   const pageNode: PageNode = {
@@ -158,6 +161,7 @@ export async function encryptPage(
   page: CreatePageInput,
   userAddress: string,
   encryptionKey: CryptoKey,
+  litClient: LitNodeClient
 ): Promise<CreatePageInput> {
   const [title, type] = await Promise.all([
     await encryptString(page.title, encryptionKey),
@@ -168,7 +172,11 @@ export async function encryptPage(
     page.data.map(async (node) => await encryptPageNode(node, encryptionKey))
   );
 
-  const { encryptedKey } = await storeEncryptionKey(encryptionKey, userAddress);
+  const { encryptedKey } = await storeEncryptionKey(
+    encryptionKey,
+    userAddress,
+    litClient
+  );
 
   const input: CreatePageInput = {
     type: type as PageType,
@@ -183,9 +191,14 @@ export async function encryptPage(
 
 export async function importStoredEncryptionKey(
   key: string,
-  userAddress: string
+  userAddress: string,
+  litClient: LitNodeClient
 ) {
-  const { encryptionKey } = await getStoredEncryptionKey(key, userAddress);
+  const { encryptionKey } = await getStoredEncryptionKey(
+    key,
+    userAddress,
+    litClient
+  );
   return await importEncryptionKey(encryptionKey);
 }
 
@@ -213,12 +226,16 @@ export async function decryptPage(
   };
 }
 
-export async function deletePage(id: string) {
-  return await updatePage(id, {
-    key: "",
-    title: "",
-    data: [],
-    deletedAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  });
+export async function deletePage(id: string, composeClient: ComposeClient) {
+  return await updatePage(
+    id,
+    {
+      key: "",
+      title: "",
+      data: [],
+      deletedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    composeClient
+  );
 }

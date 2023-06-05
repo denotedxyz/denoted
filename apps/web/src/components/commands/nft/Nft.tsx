@@ -8,7 +8,7 @@ import {
 } from "./types";
 import { formatEther } from "../../../utils/format";
 import { exponentialToDecimal } from "../../../utils/exponents";
-import { SUPPORTED_CHAINS } from "../../../supported-chains";
+import { SUPPORTED_CHAINS } from "../../../constants/supported-chains";
 
 export type NftWidgetProps = {
   property: "holders" | "floor" | "total-sales-volume" | "image";

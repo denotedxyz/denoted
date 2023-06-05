@@ -36,7 +36,7 @@ export const LensHandleWidget = ({
     return profile;
   });
 
-  if (profileQuery.isLoading || profileQuery.isIdle || profileQuery.isError) {
+  if (profileQuery.isLoading || profileQuery.isError) {
     return <DataPill query={profileQuery} />;
   }
 

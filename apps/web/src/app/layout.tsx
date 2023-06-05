@@ -1,18 +1,28 @@
 import "@denoted/ui/globals.css";
+
 import { Analytics as VercelAnalytics } from "@vercel/analytics/react";
+import { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { PropsWithChildren } from "react";
 import { Analytics } from "../components/Analytics";
 import { Providers } from "../components/Providers";
-import { InitializeCeramic } from "../components/Sessions";
 import { Toaster } from "../components/Toaster";
-import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export const metadata: Metadata = {
+  title: {
+    default: "denoted",
+    template: "%s | denoted",
+  },
+  description:
+    "The universal way to enhance your digital artefacts with on-chain data ✨",
+  openGraph: {
+    images: "/social-preview.png",
+  },
+};
+
+export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en">
       <head>
@@ -41,11 +51,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <Providers>
           {children}
-          <InitializeCeramic />
-          <Analytics />
-          <VercelAnalytics />
           <Toaster />
         </Providers>
+        <Analytics />
+        <VercelAnalytics />
       </body>
     </html>
   );

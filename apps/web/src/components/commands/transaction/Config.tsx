@@ -1,4 +1,4 @@
-import { NodeViewWrapper } from "@tiptap/react";
+"use client";
 
 import { CommandExtensionProps } from "../../../lib/tiptap/types";
 import { Popover } from "@denoted/ui";
@@ -15,7 +15,7 @@ export const TransactionConfig = (
   const { txHash, chain } = props.node.attrs;
 
   return (
-    <NodeViewWrapper as="div">
+    <div>
       {isConfigured && !props.editor.isEditable && (
         <TransactionWidget txHash={txHash} chain={Number(chain)} />
       )}
@@ -48,6 +48,6 @@ export const TransactionConfig = (
           />
         </Popover>
       )}
-    </NodeViewWrapper>
+    </div>
   );
 };

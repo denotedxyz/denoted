@@ -1,4 +1,4 @@
-import { NodeViewWrapper } from "@tiptap/react";
+"use client";
 
 import { CommandExtensionProps } from "../../../lib/tiptap/types";
 import { Popover } from "@denoted/ui";
@@ -15,7 +15,7 @@ export const NetWorthConfig = (
   const { address, chain } = props.node.attrs;
 
   return (
-    <NodeViewWrapper as="span">
+    <span>
       {isConfigured && !props.editor.isEditable && (
         <NetWorthWidget address={address} chain={Number(chain)} />
       )}
@@ -45,6 +45,6 @@ export const NetWorthConfig = (
           />
         </Popover>
       )}
-    </NodeViewWrapper>
+    </span>
   );
 };

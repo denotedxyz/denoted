@@ -5,9 +5,11 @@ import {
 } from "@lit-protocol/lit-node-client";
 import { AccsDefaultParams } from "@lit-protocol/types";
 
-export const litClient = new LitNodeClient({
-  debug: false,
-});
+export function createLitClient() {
+  return new LitNodeClient({
+    debug: false,
+  });
+}
 
 export const litChain = "ethereum";
 
@@ -84,26 +86,29 @@ function daysInFuture(days: number) {
   return date;
 }
 
-export async function authenticateLit() {
+export async function authenticateLit(litClient: LitNodeClient) {
   await litClient.connect();
 
   return await checkAndSignAuthMessage({
     chain: litChain,
-    expiration: daysInFuture(7).toISOString()
+    expiration: daysInFuture(7).toISOString(),
   });
 }
 
 export async function storeEncryptionKey(
   symmetricEncryptionKey: CryptoKey,
-  address: string
+  address: string,
+  litClient: LitNodeClient
 ): Promise<{
   encryptedKey: string;
 }> {
   await litClient.connect();
 
-  const authSig = await authenticateLit();
+  const authSig = await authenticateLit(litClient);
 
-  const exportedKey = new Uint8Array(await crypto.subtle.exportKey("raw", symmetricEncryptionKey));
+  const exportedKey = new Uint8Array(
+    await crypto.subtle.exportKey("raw", symmetricEncryptionKey)
+  );
 
   const encryptedKey = await litClient.saveEncryptionKey({
     accessControlConditions: [getAddressOwnerAcl(address)],
@@ -119,11 +124,12 @@ export async function storeEncryptionKey(
 
 export async function getStoredEncryptionKey(
   encryptedSymmetricKey: string,
-  userAddress: string
+  userAddress: string,
+  litClient: LitNodeClient
 ) {
   await litClient.connect();
 
-  const authSig = await authenticateLit();
+  const authSig = await authenticateLit(litClient);
 
   const encryptionKey = await litClient.getEncryptionKey({
     accessControlConditions: [getAddressOwnerAcl(userAddress)],

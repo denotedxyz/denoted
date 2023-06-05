@@ -1,4 +1,4 @@
-import { NodeViewWrapper } from "@tiptap/react";
+"use client";
 
 import { CommandExtensionProps } from "../../../lib/tiptap/types";
 import { Popover } from "@denoted/ui";
@@ -14,7 +14,7 @@ export const NftConfig = (props: CommandExtensionProps<NftWidgetProps>) => {
   const { property, address, chain, tokenId } = props.node.attrs;
 
   return (
-    <NodeViewWrapper as="span">
+    <span>
       {isConfigured && !props.editor.isEditable && (
         <NftWidget property={property} address={address} chain={chain} />
       )}
@@ -59,6 +59,6 @@ export const NftConfig = (props: CommandExtensionProps<NftWidgetProps>) => {
           />
         </Popover>
       )}
-    </NodeViewWrapper>
+    </span>
   );
 };

@@ -1,4 +1,5 @@
-import LensIcon from "@lens-protocol/widgets-react/dist/LensIcon";
+"use client";
+
 import React, { useState } from "react";
 import { getBaseUrl } from "../utils/base-url";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -10,23 +11,22 @@ import { Popover, PopoverContent, PopoverTrigger } from "@denoted/ui";
 import { Button, buttonVariants } from "@denoted/ui";
 import { cn } from "@denoted/ui";
 import { useToast } from "@denoted/ui";
-import * as IpfsImage from "./commands/ipfs-image";
-import { JSONContent } from "@tiptap/react";
-import ReactTimeago from "react-timeago";
+// import * as IpfsImage from "./commands/ipfs-image";
+import { formatRelative } from "date-fns";
 
 async function onPublishContent(
-  blocks: JSONContent[],
+  blocks: any[],
   encryptionKey: CryptoKey | undefined
-): Promise<JSONContent[]> {
+): Promise<any[]> {
   return await Promise.all(
     blocks.map(async (block) => {
       if (block.content) {
         block.content = await onPublishContent(block.content, encryptionKey);
       }
 
-      if (block.type === IpfsImage.extension.name) {
-        block.attrs = await IpfsImage.onPublish(block.attrs, encryptionKey);
-      }
+      // if (block.type === IpfsImage.extension.name) {
+      //   block.attrs = await IpfsImage.onPublish(block.attrs, encryptionKey);
+      // }
 
       return block;
     })
@@ -145,7 +145,12 @@ export const PublishMenu: React.FC<PublishmenuProps> = ({
                   </h3>
                   Version {publicationsQuery.data.length}{" "}
                   <span className="text-sm text-slate-500">
-                    (<ReactTimeago date={publication.created_at} />)
+                    (
+                    {formatRelative(
+                      new Date(publication.created_at),
+                      new Date()
+                    )}
+                    )
                   </span>
                 </div>
                 <Button
@@ -179,7 +184,7 @@ export const PublishMenu: React.FC<PublishmenuProps> = ({
                   rel="noreferrer"
                 >
                   <span className="mr-2 block">
-                    <LensIcon />
+                    <span>lens</span>
                   </span>
                   Share to Lens
                 </Link>
@@ -199,7 +204,12 @@ export const PublishMenu: React.FC<PublishmenuProps> = ({
                       <Link href={`/p/${publication.id}`} target="_blank">
                         Version {array.length - index}{" "}
                         <span className="text-sm text-slate-500">
-                          (<ReactTimeago date={publication.created_at} />)
+                          (
+                          {formatRelative(
+                            new Date(publication.created_at),
+                            new Date()
+                          )}
+                          )
                         </span>
                       </Link>
                     </li>

@@ -10,7 +10,7 @@ import {
 } from "@denoted/ui";
 
 import { Textarea } from "@denoted/ui";
-import { SUPPORTED_CHAINS } from "../../supported-chains";
+import { SUPPORTED_CHAINS } from "../../constants/supported-chains";
 
 export type FormField =
   | {

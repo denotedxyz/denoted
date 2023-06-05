@@ -1,4 +1,5 @@
-import { NodeViewWrapper } from "@tiptap/react";
+"use client";
+
 import { CommandExtensionProps } from "../../../lib/tiptap/types";
 import { Popover } from "@denoted/ui";
 import { useBlockConfigProps } from "../../use-block-config-props";
@@ -14,7 +15,7 @@ export const TokenPriceConfig = (
   const { property, chainId, token } = props.node.attrs;
 
   return (
-    <NodeViewWrapper as="span">
+    <span>
       {isConfigured && !props.editor.isEditable && (
         <TokenWidget property={property} chainId={chainId} token={token} />
       )}
@@ -47,6 +48,6 @@ export const TokenPriceConfig = (
           />
         </Popover>
       )}
-    </NodeViewWrapper>
+    </span>
   );
 };

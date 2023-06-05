@@ -1,4 +1,4 @@
-import { NodeViewWrapper } from "@tiptap/react";
+"use client";
 
 import { MoreHorizontal } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -58,7 +58,7 @@ export const BookmarkConfig = (props: CommandExtensionProps<BookmarkProps>) => {
   const image = linkPreviewQuery.data?.images?.at(0) ?? null;
 
   return (
-    <NodeViewWrapper as="div">
+    <div>
       <div
         className="group relative my-4"
         contentEditable={false}
@@ -165,6 +165,6 @@ export const BookmarkConfig = (props: CommandExtensionProps<BookmarkProps>) => {
           </a>
         )}
       </div>
-    </NodeViewWrapper>
+    </div>
   );
 };

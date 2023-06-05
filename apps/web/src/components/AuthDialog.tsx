@@ -2,13 +2,7 @@
 
 import { AuthSteps } from "./AuthSteps";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@denoted/ui";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@denoted/ui";
 
 type AuthDialogProps = {
   open: boolean;

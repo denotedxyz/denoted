@@ -1,4 +1,4 @@
-import { NodeViewWrapper } from "@tiptap/react";
+"use client";
 
 import { CommandExtensionProps } from "../../../lib/tiptap/types";
 import { Label } from "../../Label";
@@ -18,7 +18,7 @@ export const GraphConfig = (props: GraphComponentProps) => {
   const { url, query, path } = props.node.attrs;
 
   return (
-    <NodeViewWrapper as="span">
+    <span>
       {isConfigured && !props.editor.isEditable && (
         <GraphWidget url={url} query={query} path={path} />
       )}
@@ -61,6 +61,6 @@ export const GraphConfig = (props: GraphComponentProps) => {
           />
         </Popover>
       )}
-    </NodeViewWrapper>
+    </span>
   );
 };

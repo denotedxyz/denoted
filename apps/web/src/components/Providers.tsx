@@ -1,9 +1,11 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { getDefaultConfig, ConnectKitProvider } from "connectkit";
+import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { WagmiConfig, createConfig } from "wagmi";
 import { mainnet } from "wagmi/chains";
+import { CeramicProvider } from "../contexts/CeramicContext";
+import { LitProvider } from "../contexts/LitContext";
 
 const wagmiConfig = createConfig(
   getDefaultConfig({
@@ -21,7 +23,11 @@ export function Providers({ children }: React.PropsWithChildren) {
   return (
     <QueryClientProvider client={queryClient}>
       <WagmiConfig config={wagmiConfig}>
-        <ConnectKitProvider>{children}</ConnectKitProvider>
+        <ConnectKitProvider>
+          <CeramicProvider>
+            <LitProvider>{children}</LitProvider>
+          </CeramicProvider>
+        </ConnectKitProvider>
       </WagmiConfig>
     </QueryClientProvider>
   );

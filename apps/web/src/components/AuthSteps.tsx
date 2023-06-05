@@ -59,8 +59,6 @@ const fromAuthSteps = {
 
 export function AuthSteps() {
   const { isConnected } = useAccount();
-  const [isCeramicSessionValid, setIsCeramicSessionValid] =
-    useState<boolean>(false);
 
   const { connect, isLoading, connectors } = useCustomConnect({
     eventProperties: fromAuthSteps,
@@ -68,12 +66,6 @@ export function AuthSteps() {
 
   const ceramic = useCeramic();
   const lit = useLit();
-
-  useEffect(() => {
-    const run = async () =>
-      setIsCeramicSessionValid(await ceramic.hasSession());
-    run();
-  }, [ceramic]);
 
   const authenticateCeramicMutation = useMutation(
     async () => {
@@ -98,7 +90,7 @@ export function AuthSteps() {
   );
 
   const isCeramicConnected =
-    ceramic.isComposeResourcesSigned && isCeramicSessionValid;
+    ceramic.isComposeResourcesSigned && ceramic.isSessionValid;
 
   return (
     <div className="mb-2 rounded-3xl">

@@ -1,4 +1,4 @@
-import { NodeViewWrapper } from "@tiptap/react";
+"use client";
 
 import { CommandExtensionProps } from "../../../../lib/tiptap/types";
 import { Popover } from "@denoted/ui";
@@ -18,7 +18,7 @@ export const LensConfig = (props: CommandExtensionProps<LensWidgetProps>) => {
   const { property, publicationId, handle } = props.node.attrs;
 
   return (
-    <NodeViewWrapper as="span">
+    <span>
       {isConfigured && !props.editor.isEditable && (
         <LensWidget
           property={property}
@@ -52,6 +52,6 @@ export const LensConfig = (props: CommandExtensionProps<LensWidgetProps>) => {
           />
         </Popover>
       )}
-    </NodeViewWrapper>
+    </span>
   );
 };

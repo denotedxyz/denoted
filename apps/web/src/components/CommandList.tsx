@@ -1,5 +1,3 @@
-import { Editor, Range } from "@tiptap/core";
-import { SuggestionKeyDownProps, SuggestionProps } from "@tiptap/suggestion";
 import Image, { StaticImageData } from "next/image";
 import React, {
   forwardRef,
@@ -13,7 +11,7 @@ import { CommandConfiguration } from "./commands/types";
 import { Card, CardContent } from "@denoted/ui";
 
 export type CommandContext = {
-  editor: Editor;
+  editor: any;
   range: Range;
 };
 
@@ -25,10 +23,10 @@ export type CommandGroup = {
 export type CommandListItem = CommandGroup;
 
 export type CommandListHandle = {
-  onKeyDown: (props: SuggestionKeyDownProps) => boolean;
+  onKeyDown: (props: any) => boolean;
 };
 
-export type CommandListProps = SuggestionProps<CommandListItem>;
+export type CommandListProps = any;
 
 export const CommandList = forwardRef<CommandListHandle, CommandListProps>(
   (props, ref) => {
@@ -64,7 +62,7 @@ export const CommandList = forwardRef<CommandListHandle, CommandListProps>(
     useEffect(() => setSelectedIndex(0), [props.items]);
 
     useImperativeHandle(ref, () => ({
-      onKeyDown: ({ event }: SuggestionKeyDownProps) => {
+      onKeyDown: ({ event }: any) => {
         if (event.key === "ArrowUp") {
           upHandler();
           return true;

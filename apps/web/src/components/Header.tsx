@@ -1,3 +1,5 @@
+"use client";
+
 import { ConnectKitButton } from "connectkit";
 import { cn } from "../utils/classnames";
 

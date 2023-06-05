@@ -160,14 +160,14 @@ const IpfsImage = (props: CommandExtensionProps<IpfsImageProps>) => {
 
   if (isError) {
     return (
-      <NodeViewWrapper as="div">
+      <div>
         <DataPill query={fetchImage}>no data</DataPill>
-      </NodeViewWrapper>
+      </div>
     );
   }
 
   return (
-    <NodeViewWrapper as="div">
+    <div>
       <picture
         className="relative inline-block drag-handle"
         data-drag-handle
@@ -190,7 +190,7 @@ const IpfsImage = (props: CommandExtensionProps<IpfsImageProps>) => {
           </span>
         )}
       </picture>
-    </NodeViewWrapper>
+    </div>
   );
 };
 

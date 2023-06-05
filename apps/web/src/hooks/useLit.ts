@@ -1,10 +1,13 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { trackEvent } from "../lib/analytics";
 import { authenticateLit, getIsLitAuthenticated } from "../lib/lit";
+import { useLitContext } from "../contexts/LitContext";
 
 export function useLit() {
+  const { litClient } = useLitContext();
+
   async function authenticate() {
-    await authenticateLit();
+    await authenticateLit(litClient);
     trackEvent("Lit Authenticated");
     isLitAuthenticatedQuery.refetch();
   }
@@ -21,5 +24,6 @@ export function useLit() {
     authenticate,
     isLitAuthenticated: isLitAuthenticatedQuery.data ?? false,
     isLoading: isLitAuthenticatedQuery.isLoading,
+    litClient,
   };
 }

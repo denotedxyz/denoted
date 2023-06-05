@@ -1,4 +1,4 @@
-import { NodeViewWrapper } from "@tiptap/react";
+"use client";
 
 import { CommandExtensionProps } from "../../../lib/tiptap/types";
 import { Popover } from "@denoted/ui";
@@ -13,7 +13,7 @@ export const TallyConfig = (props: CommandExtensionProps<TallyWidgetProps>) => {
   const { query, path } = props.node.attrs;
 
   return (
-    <NodeViewWrapper as="span">
+    <span>
       {isConfigured && !props.editor.isEditable && (
         <TallyWidget query={query} path={path} />
       )}
@@ -50,6 +50,6 @@ export const TallyConfig = (props: CommandExtensionProps<TallyWidgetProps>) => {
           />
         </Popover>
       )}
-    </NodeViewWrapper>
+    </span>
   );
 };

@@ -1,4 +1,4 @@
-import { NodeViewWrapper } from "@tiptap/react";
+"use client";
 import { CommandExtensionProps } from "../../../lib/tiptap/types";
 import { Popover } from "@denoted/ui";
 import { useBlockConfigProps } from "../../use-block-config-props";
@@ -14,7 +14,7 @@ export const WalletBalanceWidgetConfig = (
   const { address, chain, symbol } = props.node.attrs;
 
   return (
-    <NodeViewWrapper as="span">
+    <span>
       {isConfigured && !props.editor.isEditable && (
         <WalletBalanceWidget
           address={address}
@@ -61,6 +61,6 @@ export const WalletBalanceWidgetConfig = (
           />
         </Popover>
       )}
-    </NodeViewWrapper>
+    </span>
   );
 };

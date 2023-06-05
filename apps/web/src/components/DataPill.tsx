@@ -1,3 +1,5 @@
+"use client";
+
 import * as Sentry from "@sentry/nextjs";
 import { PropsWithChildren, useEffect } from "react";
 import { QueryStatus, UseQueryResult } from "@tanstack/react-query";

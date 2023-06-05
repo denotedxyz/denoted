@@ -1,6 +1,6 @@
 import { gql } from "graphql-request";
-import { composeClient } from "../lib/compose";
 import { PageNode } from "./page-node";
+import { ComposeClient } from "@composedb/client";
 export type DID = {
   id: string;
 };
@@ -35,7 +35,10 @@ export type CreatePageInput = {
   type: PageType;
 };
 
-export async function createPage(input: CreatePageInput) {
+export async function createPage(
+  input: CreatePageInput,
+  composeClient: ComposeClient
+) {
   return await composeClient.executeQuery<CreatePageMutation>(
     gql`
       mutation ($content: PageInput!) {
@@ -64,7 +67,11 @@ type UpdatePageMutation = {
   };
 };
 
-export async function updatePage(id: string, input: UpdatePageInput) {
+export async function updatePage(
+  id: string,
+  input: UpdatePageInput,
+  composeClient: ComposeClient
+) {
   return await composeClient.executeQuery<UpdatePageMutation>(
     gql`
       mutation ($id: ID!, $content: PartialPageInput!) {
@@ -111,7 +118,7 @@ export type GetPagesQuery = {
   };
 };
 
-export async function getPagesQuery() {
+export async function getPagesQuery(composeClient: ComposeClient) {
   return await composeClient.executeQuery<GetPagesQuery>(gql`
     query {
       pageIndex(first: 1000) {
@@ -144,7 +151,7 @@ type GetPageQuery = {
   node: Page;
 };
 
-export async function getPageQuery(id: string) {
+export async function getPageQuery(id: string, composeClient: ComposeClient) {
   return await composeClient.executeQuery<GetPageQuery>(
     gql`
       query ($id: ID!) {

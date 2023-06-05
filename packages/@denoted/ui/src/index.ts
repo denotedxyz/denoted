@@ -13,3 +13,4 @@ export * from "./components/label";
 export * from "./components/select";
 export * from "./components/textarea";
 export * from "./components/toggle";
+export { cn } from "./utils";

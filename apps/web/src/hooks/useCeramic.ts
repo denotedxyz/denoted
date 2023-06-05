@@ -4,7 +4,8 @@ import { DIDSession } from "did-session";
 import { useQuery } from "@tanstack/react-query";
 import { useAccount } from "wagmi";
 import { trackEvent } from "../lib/analytics";
-import { composeClient } from "../lib/compose";
+import { useCeramicContext } from "../contexts/CeramicContext";
+import { useEffect, useState } from "react";
 
 export const LOCAL_STORAGE_KEYS = {
   DID:
@@ -18,18 +19,29 @@ export const LOCAL_STORAGE_KEYS = {
 };
 
 export function useCeramic() {
+  const { composeClient } = useCeramicContext();
   const { address } = useAccount();
 
   const connector = new InjectedConnector();
 
-  function isSessionValid(session: DIDSession | null) {
+  function getSessionValidity(session: DIDSession | null) {
     return !!session && session.hasSession && !session.isExpired;
   }
 
   async function hasSession() {
     const session = await getSession();
-    return isSessionValid(session);
+    return getSessionValidity(session);
   }
+
+  const sessionValidQuery = useQuery(
+    ["CERAMIC", "COMPOSE", "SESSION_VALID", composeClient.id],
+    async () => {
+      return await hasSession();
+    },
+    {
+      cacheTime: 0,
+    }
+  );
 
   async function getSession() {
     if (!address) {
@@ -81,7 +93,7 @@ export function useCeramic() {
 
     const isResourcesSigned = getIsResourcesSigned(composeClient.resources);
 
-    if (isResourcesSigned && session && isSessionValid(session)) {
+    if (isResourcesSigned && session && getSessionValidity(session)) {
       composeClient.setDID(session.did);
       trackEvent("Ceramic Authenticated", { from: "session" });
     } else {
@@ -113,9 +125,19 @@ export function useCeramic() {
     }
 
     isComposeResourcesSignedQuery.refetch();
+    sessionValidQuery.refetch();
   }
 
-  console.log("composeClient", composeClient);
+  const isInitialized = Boolean(composeClient.id);
+
+  useEffect(() => {
+    async function run() {
+      if (!isInitialized && (await hasSession())) {
+        await authenticate();
+      }
+    }
+    run();
+  }, [isInitialized, hasSession, authenticate]);
 
   return {
     authenticate,
@@ -124,5 +146,7 @@ export function useCeramic() {
     isInitialized: Boolean(composeClient.id),
     isComposeResourcesSigned: isComposeResourcesSignedQuery.data ?? false,
     isLoading: isComposeResourcesSignedQuery.isLoading,
+    composeClient,
+    isSessionValid: sessionValidQuery.data ?? false,
   };
 }

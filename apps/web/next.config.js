@@ -4,6 +4,10 @@ const { withSentryConfig } = require("@sentry/nextjs");
 const config = {
   reactStrictMode: true,
   transpilePackages: ["@denoted/ui"],
+  webpack: (config) => {
+    config.externals.push("pino-pretty", "lokijs", "encoding");
+    return config;
+  },
   async rewrites() {
     return [
       {

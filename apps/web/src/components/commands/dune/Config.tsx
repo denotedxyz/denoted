@@ -1,4 +1,4 @@
-import { NodeViewWrapper } from "@tiptap/react";
+"use client";
 
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
@@ -40,7 +40,7 @@ export const DuneConfig = (props: CommandExtensionProps<DuneProps>) => {
   const { src } = props.node.attrs;
 
   return (
-    <NodeViewWrapper>
+    <div>
       {isConfigured && (
         <div className="aspect-video">
           <iframe src={src} className="h-full w-full"></iframe>
@@ -77,6 +77,6 @@ export const DuneConfig = (props: CommandExtensionProps<DuneProps>) => {
           </Link>
         )}
       </div>
-    </NodeViewWrapper>
+    </div>
   );
 };

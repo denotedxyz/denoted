@@ -1,4 +1,4 @@
-import { NodeViewWrapper } from "@tiptap/react";
+"use client";
 
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
@@ -7,7 +7,6 @@ import { Badge } from "@denoted/ui";
 import { Popover } from "@denoted/ui";
 import { useBlockConfigProps } from "../../use-block-config-props";
 import { BlockConfigButton, BlockConfigForm } from "../BlockConfig";
-import { Tweet } from "react-twitter-widgets";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { cn } from "../../../utils/classnames";
 
@@ -24,9 +23,10 @@ export const TweetConfig = (props: CommandExtensionProps<{ src: string }>) => {
       const tweetId = urlSegments.pop() || urlSegments.pop() || "";
 
       return (
-        <NodeViewWrapper>
-          <Tweet tweetId={tweetId} />
-        </NodeViewWrapper>
+        <div>
+          {/* <Tweet tweetId={tweetId} /> */}
+          {tweetId}
+        </div>
       );
     } catch (error) {
       const message =
@@ -34,7 +34,7 @@ export const TweetConfig = (props: CommandExtensionProps<{ src: string }>) => {
           ? (error as any).message
           : "something went wrong...";
       return (
-        <NodeViewWrapper>
+        <div>
           <Tooltip.Provider>
             <Tooltip.Root>
               <Tooltip.Trigger>
@@ -54,13 +54,13 @@ export const TweetConfig = (props: CommandExtensionProps<{ src: string }>) => {
               </Tooltip.Portal>
             </Tooltip.Root>
           </Tooltip.Provider>
-        </NodeViewWrapper>
+        </div>
       );
     }
   }
 
   return (
-    <NodeViewWrapper>
+    <div>
       <div className="flex items-start justify-start gap-2">
         {props.editor.isEditable && (
           <Popover
@@ -92,6 +92,6 @@ export const TweetConfig = (props: CommandExtensionProps<{ src: string }>) => {
           </Link>
         )}
       </div>
-    </NodeViewWrapper>
+    </div>
   );
 };
