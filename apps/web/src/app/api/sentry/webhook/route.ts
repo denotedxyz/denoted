@@ -1,21 +1,11 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import TelegramBot from "node-telegram-bot-api";
 import crypto from "crypto";
-import type { Readable } from "node:stream";
 import { NextRequest, NextResponse } from "next/server";
+import TelegramBot from "node-telegram-bot-api";
 
 const botToken = process.env.TELEGRAM_API_KEY;
 const chatId = process.env.TELEGRAM_CHAT_ID;
 const topicId = process.env.TELEGRAM_TOPIC_ID;
 const bot = new TelegramBot(botToken as string, { polling: false });
-
-async function buffer(readable: Readable) {
-  const chunks = [];
-  for await (const chunk of readable) {
-    chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk);
-  }
-  return Buffer.concat(chunks);
-}
 
 type SentryWebhookPayloadData =
   | {
@@ -36,7 +26,7 @@ type SentryWebhookPayloadData =
     };
 
 function verifySignature(
-  { headers }: NextApiRequest,
+  headers: Headers,
   rawBody: string,
   secret: string = ""
 ): boolean {
@@ -46,13 +36,12 @@ function verifySignature(
   return digest === headers["sentry-hook-signature"];
 }
 
-export async function POST(req: NextRequest, res: NextResponse): Promise<void> {
+export async function POST(req: NextRequest, res: NextResponse) {
   const sentryWebhookSecret = process.env.SENTRY_WEBHOOK_SECRET || "";
 
-  const buf = await buffer(req.body);
-  const rawBody = buf.toString("utf8");
+  const rawBody = await req.text();
 
-  if (verifySignature(req, rawBody, sentryWebhookSecret)) {
+  if (verifySignature(req.headers, rawBody, sentryWebhookSecret)) {
     const body = JSON.parse(rawBody);
     const data = {
       ...body.data,
@@ -75,9 +64,15 @@ ${data.event.web_url}`;
       message_thread_id: Number(topicId),
     });
 
-    res.status(200).json({ message: "Webhook processed successfully." });
+    return NextResponse.json(
+      { success: true, message: "Webhook processed successfully." },
+      { status: 200 }
+    );
   } else {
-    res.status(401).json({ message: "Not allowed." });
+    return NextResponse.json(
+      { success: false, message: "Invalid signature." },
+      { status: 403 }
+    );
   }
 }
 
