@@ -10,7 +10,7 @@ export default function AppLayout({ children }: PropsWithChildren) {
       <Sidebar className="fixed w-64" />
       <div className="py-4 pl-64">
         <Header className="absolute right-0 top-0 p-4" />
-        <main className={cn("m-auto h-full max-w-3xl px-4 pt-14")}>
+        <main className={cn("relative m-auto h-full max-w-3xl px-4 pt-20")}>
           <AuthGuard>{children}</AuthGuard>
         </main>
       </div>

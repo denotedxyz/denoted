@@ -90,8 +90,6 @@ export function UpdatePageEditor({ pageId }: { pageId: string }) {
   const page = deserializedPageQuery.data?.page;
   const key = deserializedPageQuery.data?.key;
 
-  const isOwner = page?.createdBy.id === ceramic.composeClient.id;
-
   const updatePageMutation = useMutation(
     async ({ page: updatedPage, address, encryptionKey }: SavePageData) => {
       const pageInput = serializePage(
@@ -242,7 +240,7 @@ export function UpdatePageEditor({ pageId }: { pageId: string }) {
         page={page}
         encryptionKey={key}
         renderSubmit={({ isDisabled, getData }) => (
-          <div className="mb-10 flex gap-4">
+          <div className="absolute top-0 left-4 flex items-end gap-4">
             <Button
               onClick={() => updatePageMutation.mutate(getData())}
               disabled={isDisabled || updatePageMutation.isLoading}
@@ -265,21 +263,19 @@ export function UpdatePageEditor({ pageId }: { pageId: string }) {
 
   return (
     <>
-      {isOwner && (
-        <div className="mb-10 flex items-end gap-4">
-          <Button
-            variant={"outline"}
-            onClick={() => {
-              setIsEditing(true);
-            }}
-          >
-            <Edit className="mr-2 h-4 w-4" />
-            Edit page
-          </Button>
-          <PublishMenu page={page} encryptionKey={key} />
-          <DeletePageDialog onDelete={deletePageMutation.mutate} />
-        </div>
-      )}
+      <div className="absolute top-0 left-4 flex items-end gap-4">
+        <Button
+          variant={"outline"}
+          onClick={() => {
+            setIsEditing(true);
+          }}
+        >
+          <Edit className="mr-2 h-4 w-4" />
+          Edit page
+        </Button>
+        <PublishMenu page={page} encryptionKey={key} />
+        <DeletePageDialog onDelete={deletePageMutation.mutate} />
+      </div>
       <h1 className="mb-8 text-5xl font-bold leading-tight break-words">
         {page.title}
       </h1>
