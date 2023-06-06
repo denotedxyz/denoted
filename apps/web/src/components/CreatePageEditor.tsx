@@ -74,7 +74,7 @@ export function CreatePageEditor() {
       mode="CREATE"
       encryptionKey={generateKeyMutation.data}
       renderSubmit={({ isDisabled, getData }) => (
-        <div className="mb-10 flex gap-4">
+        <div className="mb-8 flex gap-4">
           <Button
             onClick={() => createPageMutation.mutate(getData())}
             disabled={isDisabled || createPageMutation.isLoading}

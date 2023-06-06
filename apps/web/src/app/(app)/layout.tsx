@@ -6,11 +6,13 @@ import { AuthGuard } from "../../components/AuthGuard";
 
 export default function AppLayout({ children }: PropsWithChildren) {
   return (
-    <div className={cn("min-h-screen")}>
+    <div className={cn("flex min-h-screen")}>
       <Sidebar className="fixed w-64" />
-      <div className="py-4 pl-64">
+      <div className="grow pt-4 pl-64">
         <Header className="absolute right-0 top-0 p-4" />
-        <main className={cn("relative m-auto h-full max-w-3xl px-4 pt-20")}>
+        <main
+          className={cn("relative m-auto h-full max-w-3xl px-4 flex flex-col")}
+        >
           <AuthGuard>{children}</AuthGuard>
         </main>
       </div>

@@ -35,7 +35,7 @@ export function DecryptedText({
   // random number between 0.5 and 1
   const [random] = useState(Math.random() * 0.5 + 0.5);
 
-  if (true || decryptQuery.isLoading) {
+  if (decryptQuery.isLoading) {
     return (
       <Skeleton
         className="h-4"

@@ -7,7 +7,7 @@ import { useCeramic } from "../hooks/useCeramic";
 import { useLit } from "../hooks/useLit";
 import { deserializePage } from "../utils/page-helper";
 
-const TITLE_PLACEHOLDER = "Untitled";
+import { Editor, TITLE_PLACEHOLDER } from "../core/Editor";
 
 export type SavePageData = {
   page: {
@@ -34,11 +34,6 @@ export function PageEditor({
   renderSubmit,
 }: PageEditorProps) {
   const [title, setTitle] = useState(page?.title ?? "");
-
-  useEffect(() => {
-    document.title = `${title ?? TITLE_PLACEHOLDER} | denoted`;
-  }, [title]);
-
   const titleRef = useRef<HTMLTextAreaElement>(null);
 
   const ceramic = useCeramic();
@@ -61,7 +56,7 @@ export function PageEditor({
   };
 
   return (
-    <div className="flex h-full flex-col">
+    <>
       {renderSubmit({
         isDisabled: !isEnabled,
         getData: () => ({
@@ -73,15 +68,7 @@ export function PageEditor({
           encryptionKey,
         }),
       })}
-      <TextareaAutosize
-        ref={titleRef}
-        placeholder={TITLE_PLACEHOLDER}
-        className="mb-8 w-full resize-none text-5xl font-bold leading-tight placeholder:text-slate-200 focus:outline-none"
-        value={title}
-        onChange={(event) => setTitle(event.target.value)}
-        onKeyDown={onEnter}
-        required
-      />
-    </div>
+      <Editor />
+    </>
   );
 }
