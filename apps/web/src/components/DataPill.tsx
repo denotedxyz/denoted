@@ -3,7 +3,7 @@
 import * as Sentry from "@sentry/nextjs";
 import { PropsWithChildren, useEffect } from "react";
 import { QueryStatus, UseQueryResult } from "@tanstack/react-query";
-import { cn } from "../utils/classnames";
+import { cn } from "@denoted/ui";
 
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { Badge } from "@denoted/ui";

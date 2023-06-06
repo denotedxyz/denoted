@@ -1,4 +1,4 @@
-import { cn } from "../utils";
+import { cn } from "@denoted/ui";
 
 function Skeleton({
   className,

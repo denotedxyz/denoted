@@ -1,4 +1,4 @@
-import { cn } from "../utils/classnames";
+import { cn } from "@denoted/ui";
 import { PropsWithChildren } from "react";
 import { QueryStatus, UseQueryResult } from "@tanstack/react-query";
 

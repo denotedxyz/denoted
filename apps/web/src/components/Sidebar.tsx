@@ -1,7 +1,7 @@
 import { buttonVariants } from "@denoted/ui/src/components/button";
 import { Compass, PenBox } from "lucide-react";
 import Link from "next/link";
-import { cn } from "../utils/classnames";
+import { cn } from "@denoted/ui";
 import { Footer } from "./Footer";
 import { Logo } from "./Logo";
 import { SidebarPageList } from "./SidebarPageList";

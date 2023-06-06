@@ -6,7 +6,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { cn } from "../utils/classnames";
+import { cn } from "@denoted/ui";
 import { CommandConfiguration } from "./commands/types";
 import { Card, CardContent } from "@denoted/ui";
 

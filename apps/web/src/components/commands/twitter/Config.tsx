@@ -8,7 +8,7 @@ import { Popover } from "@denoted/ui";
 import { useBlockConfigProps } from "../../use-block-config-props";
 import { BlockConfigButton, BlockConfigForm } from "../BlockConfig";
 import * as Tooltip from "@radix-ui/react-tooltip";
-import { cn } from "../../../utils/classnames";
+import { cn } from "@denoted/ui";
 
 export const TweetConfig = (props: CommandExtensionProps<{ src: string }>) => {
   const { isConfigured, isOpen, onSubmit, setOpen } =

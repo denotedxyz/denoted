@@ -7,7 +7,7 @@ import { useCeramic } from "../hooks/useCeramic";
 import { useCustomConnect } from "../hooks/useCustomConnect";
 import { useLit } from "../hooks/useLit";
 import { trackEvent } from "../lib/analytics";
-import { cn } from "../utils/classnames";
+import { cn } from "@denoted/ui";
 import { Button } from "@denoted/ui";
 import { Loader2, Wallet, Circle, CheckCircle2 } from "lucide-react";
 

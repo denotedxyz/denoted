@@ -1,4 +1,4 @@
-import { cn } from "../utils/classnames";
+import { cn } from "@denoted/ui";
 import { Mail, Twitter, Send } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
