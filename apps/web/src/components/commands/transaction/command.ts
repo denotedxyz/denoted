@@ -1,5 +1,5 @@
 import type { CommandConfiguration } from "../types";
-import { mainnet } from "wagmi/chains";
+import { mainnet } from "viem/chains";
 import { TransactionConfig } from "./Config";
 import icon from "./icon.svg";
 import { TransactionWidgetProps } from "./Transaction";

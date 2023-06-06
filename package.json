@@ -4,7 +4,9 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "nuke": "rm -rf node_modules apps/web/node_modules apps/ceramic/node_modules && yarn && yarn dev",
+    "postinstall": "patch-package"
   },
   "devDependencies": {
     "@turbo/gen": "^1.9.7",
@@ -19,5 +21,8 @@
     "apps/*",
     "packages/@denoted/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "patch-package": "7.0.0"
+  }
 }

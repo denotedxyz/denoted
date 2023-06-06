@@ -2,7 +2,7 @@ import { CommandConfiguration } from "../types";
 import { WalletBalanceWidgetProps } from "./Balance";
 import { WalletBalanceWidgetConfig } from "./Config";
 
-import { mainnet } from "wagmi/chains";
+import { mainnet } from "viem/chains";
 import icon from "./icon.svg";
 
 export const balanceCommand: CommandConfiguration<WalletBalanceWidgetProps> = {

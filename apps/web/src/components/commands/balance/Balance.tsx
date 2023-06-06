@@ -1,4 +1,5 @@
-import process from "process";
+"use client";
+
 import { useQuery } from "@tanstack/react-query";
 import { ethers } from "ethers";
 import { getEnsAddress } from "../../../utils/ens";

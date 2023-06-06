@@ -42,7 +42,7 @@ export const BookmarkConfig = (props: CommandExtensionProps<BookmarkProps>) => {
   const linkPreviewQuery = useQuery(
     ["OPEN_GRAPH", src],
     async () => {
-      const response = await fetch("/api/get-og-data?url=" + src);
+      const response = await fetch("/api/og?url=" + src);
 
       if (!response.ok) {
         throw new Error("Failed to fetch");

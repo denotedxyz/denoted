@@ -8,7 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 
 export function EmailSignup() {
   const emailSignup = useMutation(async (email: string) => {
-    const response = await fetch("/api/signup", {
+    const response = await fetch("/api/email", {
       method: "POST",
       body: JSON.stringify({ email }),
     });

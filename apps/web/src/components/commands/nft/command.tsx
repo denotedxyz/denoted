@@ -1,4 +1,4 @@
-import { mainnet } from "wagmi/chains";
+import { mainnet } from "viem/chains";
 import { CommandConfiguration } from "../types";
 import { NftConfig } from "./Config";
 import { NftWidgetProps } from "./Nft";
@@ -18,19 +18,20 @@ export const nftFloorPriceCommand: CommandConfiguration<NftWidgetProps> = {
   ConfigComponent: NftConfig,
 };
 
-export const nftTotalSalesVolumeCommand: CommandConfiguration<NftWidgetProps> = {
-  command: "total-sales-volume",
-  title: "Total Sales Volume",
-  description: "Total sales volume in ETH",
-  icon,
-  blockType: "inline",
-  defaultValues: {
-    property: "total-sales-volume",
-    address: undefined,
-    chain: mainnet.id,
-      },
-  ConfigComponent: NftConfig,
-};
+export const nftTotalSalesVolumeCommand: CommandConfiguration<NftWidgetProps> =
+  {
+    command: "total-sales-volume",
+    title: "Total Sales Volume",
+    description: "Total sales volume in ETH",
+    icon,
+    blockType: "inline",
+    defaultValues: {
+      property: "total-sales-volume",
+      address: undefined,
+      chain: mainnet.id,
+    },
+    ConfigComponent: NftConfig,
+  };
 
 export const nftUniqueHoldersCommand: CommandConfiguration<NftWidgetProps> = {
   command: "total-unique-holders",
@@ -42,7 +43,7 @@ export const nftUniqueHoldersCommand: CommandConfiguration<NftWidgetProps> = {
     property: "holders",
     address: undefined,
     chain: mainnet.id,
-      },
+  },
   ConfigComponent: NftConfig,
 };
 
@@ -56,7 +57,7 @@ export const nftImageCommand: CommandConfiguration<NftWidgetProps> = {
     property: "image",
     address: undefined,
     chain: mainnet.id,
-    tokenId: undefined
+    tokenId: undefined,
   },
   ConfigComponent: NftConfig,
 };

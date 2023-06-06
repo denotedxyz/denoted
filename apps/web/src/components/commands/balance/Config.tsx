@@ -1,4 +1,5 @@
 "use client";
+
 import { CommandExtensionProps } from "../../../lib/tiptap/types";
 import { Popover } from "@denoted/ui";
 import { useBlockConfigProps } from "../../use-block-config-props";

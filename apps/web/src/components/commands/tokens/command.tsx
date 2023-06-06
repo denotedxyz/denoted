@@ -2,7 +2,7 @@ import { CommandConfiguration } from "../types";
 import { TokenPriceConfig } from "./Config";
 import { TokenWidgetProps } from "./Tokens";
 import icon from "./icon.svg";
-import { mainnet } from "wagmi";
+import { mainnet } from "viem/chains";
 
 export const tokenPriceCommand: CommandConfiguration<TokenWidgetProps> = {
   command: "token-price",
