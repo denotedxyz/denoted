@@ -36,7 +36,7 @@ function verifySignature(
   return digest === headers["sentry-hook-signature"];
 }
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   const sentryWebhookSecret = process.env.SENTRY_WEBHOOK_SECRET || "";
 
   const rawBody = await req.text();

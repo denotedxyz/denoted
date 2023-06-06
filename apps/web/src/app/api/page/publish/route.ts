@@ -1,8 +1,8 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { DeserializedPage } from "../../../utils/page-helper";
-import { supabase } from "../../../lib/supabase/supabase";
 import PinataSDK from "@pinata/sdk";
 import * as Sentry from "@sentry/nextjs";
+import { NextRequest, NextResponse } from "next/server";
+import { supabase } from "../../../../lib/supabase/supabase";
+import { DeserializedPage } from "../../../../utils/page-helper";
 
 const pinata = new PinataSDK({
   pinataApiKey: process.env.PINATA_API_KEY,
@@ -13,12 +13,9 @@ type Payload = {
   page: DeserializedPage;
 };
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export async function POST(req: NextRequest) {
   try {
-    const { page } = JSON.parse(req.body) as Payload;
+    const { page } = (await req.json()) as Payload;
 
     const result = await pinata.pinJSONToIPFS(page, {
       pinataMetadata: {
@@ -39,19 +36,26 @@ export default async function handler(
 
     if (insert.error) {
       console.error(insert.error);
-      return res.status(500).json({ success: false });
+      return NextResponse.json(
+        { success: false, message: "Internal Server Error" },
+        { status: 500 }
+      );
     }
 
-    return res.status(200).json(insert.data);
+    return NextResponse.json(insert.data, { status: 200 });
   } catch (error) {
     Sentry.captureException(error);
     console.error(error);
     if (error instanceof Error) {
-      return res.status(500).json({ success: false, error: error.message });
+      return NextResponse.json(
+        { success: false, message: error.message },
+        { status: 500 }
+      );
     } else {
-      return res
-        .status(500)
-        .json({ success: false, error: "Internal Server Error" });
+      return NextResponse.json(
+        { success: false, message: "Internal Server Error" },
+        { status: 500 }
+      );
     }
   }
 }
