@@ -1,26 +1,19 @@
-import { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
-import { Logo } from "../components/Logo";
-import { Viewer } from "../components/Viewer";
-import { COMMANDS } from "../components/commands";
 import {
-  Button,
-  buttonVariants,
   Badge,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-  Input,
+  buttonVariants,
+  cn,
 } from "@denoted/ui";
-import { trackEvent } from "../lib/analytics";
-import { cn } from "../utils/classnames";
-import { DeserializedPage } from "../utils/page-helper";
-import * as Form from "@radix-ui/react-form";
-import { Loader2 } from "lucide-react";
+import { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 import { EmailSignup } from "../components/EmailSignup";
+import { Logo } from "../components/Logo";
+import { COMMANDS } from "../components/commands";
 
 export const metadata: Metadata = {
   title: "denoted",
