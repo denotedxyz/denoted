@@ -1,34 +1,51 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
 import { decryptString } from "../lib/crypto";
 import { importStoredEncryptionKey } from "../utils/page-helper";
 import { useLit } from "../hooks/useLit";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton, cn } from "@denoted/ui";
+import { useState } from "react";
 
 export function DecryptedText({
   encryptionKey,
   value,
+  className,
 }: {
   encryptionKey: string;
   value: string;
+  className?: string;
 }) {
-  const [decrypted, setDecrypted] = useState<string | null>(null);
   const { address } = useAccount();
   const { litClient } = useLit();
 
-  useEffect(() => {
-    async function run() {
+  const decryptQuery = useQuery(
+    ["DECRYPTED_TEXT", encryptionKey, value, address],
+    async () => {
       const { key } = await importStoredEncryptionKey(
         encryptionKey,
         address!,
         litClient
       );
-      const decryptedValue = await decryptString(value, key);
-      setDecrypted(decryptedValue);
+      return await decryptString(value, key);
     }
-    run();
-  }, [address, encryptionKey, value]);
+  );
 
-  return <span>{decrypted ?? "Loading..."}</span>;
+  // random number between 0.5 and 1
+  const [random] = useState(Math.random() * 0.5 + 0.5);
+
+  if (true || decryptQuery.isLoading) {
+    return (
+      <Skeleton
+        className="h-4"
+        style={{
+          animationDelay: random.toString(),
+          width: `${(random * 100).toFixed(0)}%`,
+        }}
+      />
+    );
+  }
+
+  return <span className={cn(className)}>{decryptQuery.data}</span>;
 }

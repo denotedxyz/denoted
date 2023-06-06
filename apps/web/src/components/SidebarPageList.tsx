@@ -54,25 +54,22 @@ export function SidebarPageList() {
           return (
             <li key={page.id}>
               <Link
-                href={{
-                  pathname: url,
-                }}
+                href={url}
                 className={cn(
                   buttonVariants({ variant: "outline" }),
                   "w-full justify-start",
                   url === pathname && "border-slate-600"
                 )}
               >
-                <span className="truncate">
-                  {page.key ? (
-                    <DecryptedText
-                      encryptionKey={page.key}
-                      value={page.title}
-                    />
-                  ) : (
-                    page.title
-                  )}
-                </span>
+                {page.key ? (
+                  <DecryptedText
+                    encryptionKey={page.key}
+                    value={page.title}
+                    className="truncate"
+                  />
+                ) : (
+                  <span className="truncate">{page.title}</span>
+                )}
               </Link>
             </li>
           );
