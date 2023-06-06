@@ -1,9 +1,13 @@
-import { ethers } from "ethers";
-export async function getEnsAddress(ens: string) {
-  const provider = new ethers.providers.InfuraProvider(
-    "mainnet",
-    process.env.INFURA_API_KEY
-  );
+import { createPublicClient, http } from "viem";
+import { mainnet } from "viem/chains";
 
-  return await provider.resolveName(ens);
+export const publicClient = createPublicClient({
+  chain: mainnet,
+  transport: http(),
+});
+
+export async function getEnsAddress(ens: string) {
+  return await publicClient.getEnsAddress({
+    name: ens,
+  });
 }
