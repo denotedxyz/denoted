@@ -1,19 +1,19 @@
-import { $getRoot, $getSelection } from "lexical";
+"use client";
+
 import { useEffect, useRef, useState } from "react";
 
 import {
   InitialConfigType,
   LexicalComposer,
 } from "@lexical/react/LexicalComposer";
-import { PlainTextPlugin } from "@lexical/react/LexicalPlainTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
-import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
-import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
-import { ListPlugin } from "@lexical/react/LexicalListPlugin";
-import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import TextareaAutosize from "react-textarea-autosize";
+import { CORE_EDITOR_NODES } from "./nodes";
 
 export const TITLE_PLACEHOLDER = "Untitled";
 
@@ -21,8 +21,12 @@ type EditorProps = {};
 
 export function Editor({}: EditorProps) {
   const initialConfig: InitialConfigType = {
-    namespace: "MyEditor",
-    onError: (error) => console.error("Lexical Error:", error),
+    namespace: "denoted",
+    onError: (error) => {
+      console.error("Lexical Error:", error);
+      throw error;
+    },
+    nodes: CORE_EDITOR_NODES,
   };
 
   const [title, setTitle] = useState("");
@@ -36,6 +40,7 @@ export function Editor({}: EditorProps) {
     <LexicalComposer initialConfig={initialConfig}>
       <HistoryPlugin />
       <ListPlugin />
+      <MarkdownShortcutPlugin />
       <TextareaAutosize
         ref={titleRef}
         placeholder={TITLE_PLACEHOLDER}
@@ -44,11 +49,11 @@ export function Editor({}: EditorProps) {
         onChange={(event) => setTitle(event.target.value)}
         required
       />
-      <div className="grow relative">
+      <div className="grow flex relative prose">
         <RichTextPlugin
-          contentEditable={<ContentEditable className="h-full outline-none" />}
+          contentEditable={<ContentEditable className="grow outline-none" />}
           placeholder={
-            <p className="absolute top-0 left-0 text-slate-300">
+            <p className="absolute top-5 left-0 text-slate-300 m-0 select-none pointer-events-none">
               Use '/' for commands
             </p>
           }

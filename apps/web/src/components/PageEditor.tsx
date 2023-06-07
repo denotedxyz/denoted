@@ -7,7 +7,7 @@ import { useCeramic } from "../hooks/useCeramic";
 import { useLit } from "../hooks/useLit";
 import { deserializePage } from "../utils/page-helper";
 
-import { Editor, TITLE_PLACEHOLDER } from "../core/Editor";
+import { Editor } from "../core/editor/Editor";
 
 export type SavePageData = {
   page: {
