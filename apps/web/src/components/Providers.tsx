@@ -3,7 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { WagmiConfig, createConfig } from "wagmi";
-import { mainnet } from "wagmi/chains";
+import { mainnet } from "viem/chains";
 import { CeramicProvider } from "../contexts/CeramicContext";
 import { LitProvider } from "../contexts/LitContext";
 
