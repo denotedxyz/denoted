@@ -123,13 +123,12 @@ export function SlashMenuPlugin(): JSX.Element {
         onSelect: () =>
           editor.dispatchCommand(INSERT_HORIZONTAL_RULE_COMMAND, undefined),
       }),
-      ...["left", "center", "right", "justify"].map(
+      ...(["left", "center", "right", "justify"] as const).map(
         (alignment) =>
           new SlashMenuOption(`Align ${alignment}`, {
             group: "basic",
             keywords: ["align", "justify", alignment],
             onSelect: () =>
-              // @ts-ignore Correct types, but since they're dynamic TS doesn't like it.
               editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, alignment),
           })
       ),
