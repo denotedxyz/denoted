@@ -29,6 +29,8 @@ import { AutoLinkPlugin } from "./plugins/AutoLinkPlugin";
 import { DraggableBlockPlugin } from "./plugins/DraggableBlockPlugin";
 import { SlashMenuPlugin } from "./plugins/SlashMenu/SlashMenu";
 import { FloatingLinkEditorPlugin } from "./plugins/FloatingLinkEditorPlugin";
+import { FloatingMenuPlugin } from "lexical-floating-menu";
+import { FloatingMenu } from "./plugins/FloatingMenu/components/FloatingMenu";
 
 export const TITLE_PLACEHOLDER = "Untitled";
 
@@ -45,6 +47,12 @@ export function Editor({}: EditorProps) {
     theme: {
       link: "cursor-pointer",
       code: "block",
+      text: {
+        bold: "font-bold",
+        italic: "italic",
+        underline: "underline",
+        strikethrough: "line-through",
+      },
       list: {
         nested: {
           listitem: "list-none before:hidden after:hidden",
@@ -89,6 +97,10 @@ export function Editor({}: EditorProps) {
           <>
             <FloatingLinkEditorPlugin anchorElem={editorRef.current} />
             <DraggableBlockPlugin anchorElem={editorRef.current} />
+            <FloatingMenuPlugin
+              element={editorRef.current}
+              MenuComponent={FloatingMenu}
+            />
           </>
         )}
         <SlashMenuPlugin />

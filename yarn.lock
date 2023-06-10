@@ -1859,12 +1859,24 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/core/-/core-0.7.3.tgz#d274116678ffae87f6b60e90f88cc4083eefab86"
   integrity sha512-buc8BXHmG9l82+OQXOFU3Kr2XQx9ys01U/Q9HMIrZ300iLc8HLMgh7dcCqgYzAzf4BkoQvDcXf5Y+CuEZ5JBYg==
 
+"@floating-ui/core@^1.2.6":
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/@floating-ui/core/-/core-1.2.6.tgz#d21ace437cc919cdd8f1640302fa8851e65e75c0"
+  integrity sha512-EvYTiXet5XqweYGClEmpu3BoxmsQ4hkj3QaYA6qEnigCWffTP3vNRwBReTdrwDwo7OoJ3wM8Uoe9Uk4n+d4hfg==
+
 "@floating-ui/dom@^0.5.3":
   version "0.5.4"
   resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-0.5.4.tgz#4eae73f78bcd4bd553ae2ade30e6f1f9c73fe3f1"
   integrity sha512-419BMceRLq0RrmTSDxn8hf9R3VCJv2K9PUfugh5JyEFmdjzDo+e8U5EdR8nzKq8Yj1htzLm3b6eQEEam3/rrtg==
   dependencies:
     "@floating-ui/core" "^0.7.3"
+
+"@floating-ui/dom@^1.2.6":
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-1.2.9.tgz#b9ed1c15d30963419a6736f1b7feb350dd49c603"
+  integrity sha512-sosQxsqgxMNkV3C+3UqTS6LxP7isRLwX8WMepp843Rb3/b0Wz8+MdUkxJksByip3C2WwLugLHN1b4ibn//zKwQ==
+  dependencies:
+    "@floating-ui/core" "^1.2.6"
 
 "@floating-ui/react-dom@0.7.2":
   version "0.7.2"
@@ -12082,6 +12094,13 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
+lexical-floating-menu@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/lexical-floating-menu/-/lexical-floating-menu-0.1.0.tgz#04704af3a2b88f67fe6b37e92d00a99a9c336438"
+  integrity sha512-ORk4/TIdCJnu5J8Zwjk+wi4XS5G/qcU/uuoN8dutzclVEsbEc+VwuiTpQ8FLHGIA7s7Nvvm5IC0oqldU6LkWCw==
+  dependencies:
+    "@floating-ui/dom" "^1.2.6"
+
 lexical@0.11.1:
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/lexical/-/lexical-0.11.1.tgz#a4ca061c16d9798b3c0b9f2f8e89cc077385e4ea"
@@ -12449,6 +12468,11 @@ lucide-react@0.171.0:
   version "0.171.0"
   resolved "https://registry.yarnpkg.com/lucide-react/-/lucide-react-0.171.0.tgz#fa1c54709a497d7f972326f216eecdaccda6ffb6"
   integrity sha512-iCcpl4wfilDMeG1WtTkYTf47RMOx5KO5Kn5N8SSWq5KBxUELkHT7+p8+6wRz7GETxScA8fvjz22tFBmODnlYRg==
+
+lucide-react@0.241.0:
+  version "0.241.0"
+  resolved "https://registry.yarnpkg.com/lucide-react/-/lucide-react-0.241.0.tgz#e5116bb66e64e8c1742bd063a96248f54b527a8e"
+  integrity sha512-g22ci6iHuNc2hUwjiFz0D3jQQfQYrZBZesXG6+AX5rOV68Epttkt/nF6dMdz6reKJjtpoNzu+LKeKHGu/qjOgQ==
 
 luxon@^3.2.1:
   version "3.3.0"
