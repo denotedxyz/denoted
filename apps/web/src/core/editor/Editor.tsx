@@ -28,6 +28,7 @@ import { CodeHighlightPlugin } from "./plugins/CodeHighlightPlugin";
 import { AutoLinkPlugin } from "./plugins/AutoLinkPlugin";
 import { DraggableBlockPlugin } from "./plugins/DraggableBlockPlugin";
 import { SlashMenuPlugin } from "./plugins/SlashMenu";
+import { FloatingLinkEditorPlugin } from "./plugins/FloatingLinkEditorPlugin";
 
 export const TITLE_PLACEHOLDER = "Untitled";
 
@@ -76,12 +77,18 @@ export function Editor({}: EditorProps) {
       <MarkdownShortcutPlugin transformers={DEFAULT_TRANSFORMERS} />
       <TabIndentationPlugin />
       <LinkPlugin />
-      <LexicalClickableLinkPlugin />
+      {/*
+       * TODO: render this when editor is not editable
+       * <LexicalClickableLinkPlugin />
+       */}
       <CheckListPlugin />
       <HorizontalRulePlugin />
       <CodeHighlightPlugin />
       {editorRef.current && (
-        <DraggableBlockPlugin anchorElem={editorRef.current} />
+        <>
+          <FloatingLinkEditorPlugin anchorElem={editorRef.current} />
+          <DraggableBlockPlugin anchorElem={editorRef.current} />
+        </>
       )}
       <SlashMenuPlugin />
       <TextareaAutosize

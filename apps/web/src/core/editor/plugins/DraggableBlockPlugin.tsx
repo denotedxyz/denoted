@@ -322,6 +322,7 @@ function setMenuPosition(
 ) {
   if (!targetElem) {
     floatingElem.style.opacity = "0";
+    // disable this so that the floatingElem doesn't affect the layout
     // floatingElem.style.transform = "translate(-10000px, -10000px)";
     return;
   }
@@ -560,9 +561,10 @@ function useDraggableBlockMenu(
         onDragEnd={onDragEnd}
       >
         <GripVertical
+          strokeWidth={1}
           className={cn(
             DRAGGABLE_BLOCK_MENU_CLASSNAME,
-            "w-5 h-5 opacity-30 rounded block"
+            "w-4 h-4 opacity-30 rounded block"
           )}
         />
       </div>
