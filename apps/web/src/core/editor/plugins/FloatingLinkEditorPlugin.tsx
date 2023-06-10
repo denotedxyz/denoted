@@ -24,6 +24,8 @@ import { createPortal } from "react-dom";
 
 import { getSelectedNode } from "../utils/getSelectedNode";
 import { setFloatingElemPositionForLinkEditor } from "../utils/setFloatingElemPositionForLinkEditor";
+import { Input } from "@denoted/ui";
+import { Check, Edit, Trash, X } from "lucide-react";
 
 function FloatingLinkEditor({
   editor,
@@ -40,7 +42,7 @@ function FloatingLinkEditor({
   const inputRef = useRef<HTMLInputElement>(null);
   const [linkUrl, setLinkUrl] = useState("");
   const [editedLinkUrl, setEditedLinkUrl] = useState("");
-  const [isEditMode, setEditMode] = useState(false);
+  const [isEditMode, setEditMode] = useState(editedLinkUrl.length === 0);
   const [lastSelection, setLastSelection] = useState<
     RangeSelection | GridSelection | NodeSelection | null
   >(null);
@@ -188,16 +190,16 @@ function FloatingLinkEditor({
   return (
     <div
       ref={linkEditorRef}
-      className="flex absolute top-0 left-0 z-10 max-w-sm shadow-sm will-change-transform opacity-0 bg-white"
+      className="absolute top-0 left-0 z-10 p-1 will-change-transform opacity-0 flex items-center justify-between"
     >
       {!isLink ? null : isEditMode ? (
-        <>
-          <input
+        <div className="flex gap-2">
+          <Input
             ref={inputRef}
             value={editedLinkUrl}
             // the class `link-input` is used to prevent the editor from closing when the input is focused
             // NOTE: DO NOT REMOVE
-            className="link-input"
+            className="link-input max-w-md w-full"
             onChange={(event) => {
               setEditedLinkUrl(event.target.value);
             }}
@@ -205,7 +207,7 @@ function FloatingLinkEditor({
               monitorInputInteraction(event);
             }}
           />
-          <div>
+          <div className="flex gap-1">
             <div
               role="button"
               tabIndex={0}
@@ -213,39 +215,54 @@ function FloatingLinkEditor({
               onClick={() => {
                 setEditMode(false);
               }}
-            />
+            >
+              <X className="h-4 w-4" />
+            </div>
 
             <div
               role="button"
               tabIndex={0}
               onMouseDown={(event) => event.preventDefault()}
               onClick={handleLinkSubmission}
-            />
+            >
+              <Check className="h-4 w-4" />
+            </div>
           </div>
-        </>
+        </div>
       ) : (
-        <div>
-          <a href={linkUrl} target="_blank" rel="noopener noreferrer">
+        <div className="flex gap-2 px-2 py-1 bg-slate-100 border border-slate-300 rounded-md">
+          <a
+            href={linkUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="truncate max-w-[10rem] text-slate-700 font-normal text-xs"
+          >
             {linkUrl}
           </a>
-          <div
-            role="button"
-            tabIndex={0}
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => {
-              setEditedLinkUrl(linkUrl);
-              setEditMode(true);
-            }}
-          />
-          <div
-            className="link-trash"
-            role="button"
-            tabIndex={0}
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => {
-              editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
-            }}
-          />
+          <div className="flex gap-1">
+            <button
+              tabIndex={0}
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => {
+                setEditedLinkUrl(linkUrl);
+                setEditMode(true);
+              }}
+              type="button"
+            >
+              <Edit className="h-4 w-4" />
+            </button>
+            <button
+              className="link-trash"
+              role="button"
+              tabIndex={0}
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => {
+                editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
+              }}
+            >
+              <Trash className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       )}
     </div>
