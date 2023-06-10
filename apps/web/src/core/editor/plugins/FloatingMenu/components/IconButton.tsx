@@ -17,7 +17,7 @@ export function IconButton({
     <button
       {...props}
       className={cn(
-        "py-[1px] px-1 rounded-sm",
+        "p-1.5 rounded-sm",
         active && "text-slate-900",
         `${
           props.disabled
