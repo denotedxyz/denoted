@@ -37,12 +37,14 @@ import {
   LucideIcon,
   SplitSquareVertical,
   TextQuote,
+  Wallet,
 } from "lucide-react";
 
 import { Card, CardContent } from "@denoted/ui";
 import { SlashMenuItem } from "./components/SlashMenuItem";
 import { SlashMenuOption } from "./types";
 import groupBy from "lodash.groupby";
+import { INSERT_ACCOUNT_BALANCE_COMMAND } from "../../../../modules/account-balance/editor/plugin";
 
 function SlashMenuItemIcon({ icon: Icon }: { icon: LucideIcon }) {
   return <Icon className="w-4 h-4" />;
@@ -59,6 +61,12 @@ export function SlashMenuPlugin(): JSX.Element {
 
   const options = useMemo(() => {
     const baseOptions = [
+      new SlashMenuOption("Balance", {
+        icon: <SlashMenuItemIcon icon={Wallet} />,
+        group: "account",
+        onSelect: () =>
+          editor.dispatchCommand(INSERT_ACCOUNT_BALANCE_COMMAND, null),
+      }),
       ...(
         [
           { level: 1, icon: Heading1 },

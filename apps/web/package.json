@@ -15,6 +15,7 @@
     "@lens-protocol/client": "1.1.0",
     "@lens-protocol/widgets-react": "0.0.16",
     "@lexical/react": "0.11.1",
+    "@lexical/utils": "0.11.1",
     "@lit-protocol/lit-node-client": "2.2.21",
     "@sentry/nextjs": "7.54.0",
     "@tanstack/react-query": "4.29.12",
@@ -37,7 +38,8 @@
     "react-dom": "18.2.0",
     "react-textarea-autosize": "8.4.1",
     "viem": "0.3.50",
-    "wagmi": "1.1.0"
+    "wagmi": "1.1.0",
+    "zod": "3.21.4"
   },
   "devDependencies": {
     "@composedb/types": "0.4.4",

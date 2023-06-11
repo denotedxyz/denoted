@@ -2,7 +2,7 @@ import { MenuOption } from "@lexical/react/LexicalTypeaheadMenuPlugin";
 import { StaticImageData } from "next/image";
 import { ReactNode } from "react";
 
-export type SlashMenuOptionGroup = "basic" | "other";
+export type SlashMenuOptionGroup = "basic" | "account";
 
 export class SlashMenuOption extends MenuOption {
   // What group does this option belong to?

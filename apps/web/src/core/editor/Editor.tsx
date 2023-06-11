@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
+import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
 import {
   InitialConfigType,
   LexicalComposer,
@@ -9,41 +11,41 @@ import {
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { HorizontalRulePlugin } from "@lexical/react/LexicalHorizontalRulePlugin";
+import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
-import LexicalClickableLinkPlugin from "@lexical/react/LexicalClickableLinkPlugin";
 import {
   DEFAULT_TRANSFORMERS,
   MarkdownShortcutPlugin,
 } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
-import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
-import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
-import { HorizontalRulePlugin } from "@lexical/react/LexicalHorizontalRulePlugin";
-import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 
-import TextareaAutosize from "react-textarea-autosize";
-import { CORE_EDITOR_NODES } from "./nodes";
-import { CodeHighlightPlugin } from "./plugins/CodeHighlightPlugin";
-import { AutoLinkPlugin } from "./plugins/AutoLinkPlugin";
-import { DraggableBlockPlugin } from "./plugins/DraggableBlockPlugin";
-import { SlashMenuPlugin } from "./plugins/SlashMenu/SlashMenu";
-import { FloatingLinkEditorPlugin } from "./plugins/FloatingLinkEditorPlugin";
 import { FloatingMenuPlugin } from "lexical-floating-menu";
+import TextareaAutosize from "react-textarea-autosize";
+import { modules } from "../../modules";
+import { CORE_EDITOR_NODES } from "./nodes";
+import { AutoLinkPlugin } from "./plugins/AutoLinkPlugin";
+import { CodeHighlightPlugin } from "./plugins/CodeHighlightPlugin";
+import { DraggableBlockPlugin } from "./plugins/DraggableBlockPlugin";
+import { FloatingLinkEditorPlugin } from "./plugins/FloatingLinkEditorPlugin";
 import { FloatingMenu } from "./plugins/FloatingMenu/components/FloatingMenu";
+import { SlashMenuPlugin } from "./plugins/SlashMenu/SlashMenu";
 
 export const TITLE_PLACEHOLDER = "Untitled";
 
 type EditorProps = {};
 
 export function Editor({}: EditorProps) {
+  const nodes = modules.flatMap((module) => module.editor.nodes);
+
   const initialConfig: InitialConfigType = {
     namespace: "denoted",
     onError: (error) => {
       console.error("Lexical Error:", error);
       throw error;
     },
-    nodes: CORE_EDITOR_NODES,
+    nodes: CORE_EDITOR_NODES.concat(nodes),
     theme: {
       link: "cursor-pointer",
       code: "block",
@@ -95,6 +97,9 @@ export function Editor({}: EditorProps) {
         <CodeHighlightPlugin />
         {editorRef.current && (
           <>
+            {modules.map((module) => (
+              <module.editor.plugin key={module.name} />
+            ))}
             <FloatingLinkEditorPlugin anchorElem={editorRef.current} />
             <DraggableBlockPlugin anchorElem={editorRef.current} />
             <FloatingMenuPlugin
