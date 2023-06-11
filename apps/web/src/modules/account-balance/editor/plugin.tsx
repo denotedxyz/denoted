@@ -1,7 +1,7 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $insertNodeToNearestRoot } from "@lexical/utils";
 
 import {
+  $insertNodes,
   COMMAND_PRIORITY_EDITOR,
   LexicalCommand,
   createCommand,
@@ -26,7 +26,7 @@ export function AccountBalancePlugin() {
       INSERT_ACCOUNT_BALANCE_COMMAND,
       () => {
         const accountBalanceNode = $createAccountBalanceNode();
-        $insertNodeToNearestRoot(accountBalanceNode);
+        $insertNodes([accountBalanceNode]);
         return true;
       },
       COMMAND_PRIORITY_EDITOR

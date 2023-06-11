@@ -19,17 +19,17 @@ export function AccountBalanceText({
   });
 
   if (accountBalanceQuery.isLoading) {
-    return <div>Loading...</div>;
+    return <span>Loading...</span>;
   }
 
   if (accountBalanceQuery.isError) {
-    return <div>Error</div>;
+    return <span>Error</span>;
   }
 
   return (
-    <div>
+    <span>
       {formatEther(BigInt(accountBalanceQuery?.data?.balance)).substring(0, 5)}{" "}
       {tickerSymbol}
-    </div>
+    </span>
   );
 }
