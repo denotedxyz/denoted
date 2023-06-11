@@ -23,11 +23,30 @@ import {
 } from "lexical";
 import { useCallback, useMemo, useState } from "react";
 import * as ReactDOM from "react-dom";
+import {
+  AlignCenter,
+  AlignLeft,
+  AlignRight,
+  Code,
+  Heading1,
+  Heading2,
+  Heading3,
+  List,
+  ListChecks,
+  ListOrdered,
+  LucideIcon,
+  SplitSquareVertical,
+  TextQuote,
+} from "lucide-react";
 
 import { Card, CardContent } from "@denoted/ui";
 import { SlashMenuItem } from "./components/SlashMenuItem";
 import { SlashMenuOption } from "./types";
 import groupBy from "lodash.groupby";
+
+function SlashMenuItemIcon({ icon: Icon }: { icon: LucideIcon }) {
+  return <Icon className="w-4 h-4" />;
+}
 
 export function SlashMenuPlugin(): JSX.Element {
   const [editor] = useLexicalComposerContext();
@@ -40,53 +59,50 @@ export function SlashMenuPlugin(): JSX.Element {
 
   const options = useMemo(() => {
     const baseOptions = [
-      new SlashMenuOption("Paragraph", {
-        group: "other",
-        keywords: ["normal", "paragraph", "p", "text"],
-        onSelect: () =>
-          editor.update(() => {
-            const selection = $getSelection();
-            if ($isRangeSelection(selection)) {
-              $setBlocksType(selection, () => $createParagraphNode());
-            }
-          }),
-      }),
-      ...Array.from({ length: 3 }, (_, i) => i + 1).map(
-        (n) =>
+      ...(
+        [
+          { level: 1, icon: Heading1 },
+          { level: 2, icon: Heading2 },
+          { level: 3, icon: Heading3 },
+        ] as const
+      ).map(
+        ({ level: n, icon }) =>
           new SlashMenuOption(`Heading ${n}`, {
+            icon: <SlashMenuItemIcon icon={icon} />,
             group: "basic",
             keywords: ["heading", "header", `h${n}`],
             onSelect: () =>
               editor.update(() => {
                 const selection = $getSelection();
                 if ($isRangeSelection(selection)) {
-                  $setBlocksType(selection, () =>
-                    // @ts-ignore Correct types, but since they're dynamic TS doesn't like it.
-                    $createHeadingNode(`h${n}`)
-                  );
+                  $setBlocksType(selection, () => $createHeadingNode(`h${n}`));
                 }
               }),
           })
       ),
       new SlashMenuOption("Numbered List", {
-        group: "other",
+        icon: <SlashMenuItemIcon icon={ListOrdered} />,
+        group: "basic",
         keywords: ["numbered list", "ordered list", "ol"],
         onSelect: () =>
           editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined),
       }),
       new SlashMenuOption("Bulleted List", {
+        icon: <SlashMenuItemIcon icon={List} />,
         group: "basic",
         keywords: ["bulleted list", "unordered list", "ul"],
         onSelect: () =>
           editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined),
       }),
       new SlashMenuOption("Check List", {
+        icon: <SlashMenuItemIcon icon={ListChecks} />,
         group: "basic",
         keywords: ["check list", "todo list"],
         onSelect: () =>
           editor.dispatchCommand(INSERT_CHECK_LIST_COMMAND, undefined),
       }),
       new SlashMenuOption("Quote", {
+        icon: <SlashMenuItemIcon icon={TextQuote} />,
         group: "basic",
         keywords: ["block quote"],
         onSelect: () =>
@@ -98,6 +114,7 @@ export function SlashMenuPlugin(): JSX.Element {
           }),
       }),
       new SlashMenuOption("Code", {
+        icon: <SlashMenuItemIcon icon={Code} />,
         group: "basic",
         keywords: ["javascript", "python", "js", "codeblock"],
         onSelect: () =>
@@ -118,18 +135,26 @@ export function SlashMenuPlugin(): JSX.Element {
           }),
       }),
       new SlashMenuOption("Divider", {
+        icon: <SlashMenuItemIcon icon={SplitSquareVertical} />,
         group: "basic",
         keywords: ["horizontal rule", "divider", "hr"],
         onSelect: () =>
           editor.dispatchCommand(INSERT_HORIZONTAL_RULE_COMMAND, undefined),
       }),
-      ...(["left", "center", "right", "justify"] as const).map(
-        (alignment) =>
-          new SlashMenuOption(`Align ${alignment}`, {
+      ...(
+        [
+          { align: "left", icon: AlignLeft },
+          { align: "center", icon: AlignCenter },
+          { align: "right", icon: AlignRight },
+        ] as const
+      ).map(
+        ({ align, icon }) =>
+          new SlashMenuOption(`Align ${align}`, {
+            icon: <SlashMenuItemIcon icon={icon} />,
             group: "basic",
-            keywords: ["align", "justify", alignment],
+            keywords: ["align", "justify", align],
             onSelect: () =>
-              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, alignment),
+              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, align),
           })
       ),
     ];

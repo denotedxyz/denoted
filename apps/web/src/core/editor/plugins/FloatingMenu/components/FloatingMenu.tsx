@@ -55,14 +55,6 @@ export function FloatingMenu({ editor }: FloatingMenuComponentProps) {
     isLink: false,
   });
 
-  // const insertLink = useCallback(() => {
-  //   if (!isLink) {
-  //     editor.dispatchCommand(TOGGLE_LINK_COMMAND, "https://");
-  //   } else {
-  //     editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
-  //   }
-  // }, [editor, isLink]);
-
   useEffect(() => {
     const unregisterListener = editor.registerUpdateListener(
       ({ editorState }) => {
