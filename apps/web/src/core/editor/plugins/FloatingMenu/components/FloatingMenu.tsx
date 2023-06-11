@@ -1,10 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+"use client";
+
 import { $isCodeHighlightNode } from "@lexical/code";
-import {
-  $isLinkNode,
-  $isAutoLinkNode,
-  TOGGLE_LINK_COMMAND,
-} from "@lexical/link";
+import { $isLinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
+import { useEffect, useState } from "react";
 
 import {
   $getSelection,
@@ -14,22 +12,22 @@ import {
   FORMAT_TEXT_COMMAND,
 } from "lexical";
 import {
+  AlignCenter,
+  AlignLeft,
+  AlignRight,
   Bold,
-  Italic,
-  Underline,
-  Strikethrough,
   Code,
+  Italic,
+  Link2,
+  Strikethrough,
   Subscript,
   Superscript,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
-  Link2,
+  Underline,
 } from "lucide-react";
 
-import { IconButton } from "./IconButton";
 import { FloatingMenuComponentProps } from "lexical-floating-menu";
 import { getSelectedNode } from "../../../utils/getSelectedNode";
+import { IconButton } from "./IconButton";
 
 export type FloatingMenuState = {
   isBold: boolean;
