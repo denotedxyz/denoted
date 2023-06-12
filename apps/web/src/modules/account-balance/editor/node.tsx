@@ -7,6 +7,7 @@ import {
 } from "lexical";
 import React, { Suspense } from "react";
 import { AccountBalanceComponentState } from "./component";
+import { AccountBalanceLoading } from "../ui/account-balance-loading";
 
 const AccountBalanceComponent = React.lazy(async () =>
   import("./component").then((module) => ({
@@ -82,7 +83,7 @@ export class AccountBalanceNode extends DecoratorNode<JSX.Element> {
 
   decorate(): JSX.Element {
     return (
-      <Suspense fallback={null}>
+      <Suspense fallback={<AccountBalanceLoading />}>
         <AccountBalanceComponent
           nodeKey={this.getKey()}
           state={this.getState()}

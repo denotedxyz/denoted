@@ -14,6 +14,7 @@ import { $getNodeByKey } from "lexical";
 import {
   AccountBalanceText,
   AccountBalanceTextProps,
+  TextPill,
 } from "../ui/account-balance-text";
 import { $isAccountBalanceNode, AccountBalanceNode } from "./node";
 import { z } from "zod";
@@ -34,6 +35,8 @@ import { SUPPORTED_CHAINS } from "../../../constants/supported-chains";
 import { SupportedChainId } from "../../../core/schemas/account";
 import { Address, getAddress } from "viem";
 import { getEnsAddress } from "../../../utils/ens";
+import { mainnet } from "wagmi";
+import { useState } from "react";
 
 type Nullable<T> = { [Key in keyof T]: T[Key] | null };
 
@@ -77,9 +80,18 @@ const formSchema = z.object({
 
 export function AccountBalanceComponent({
   nodeKey,
-  state,
+  state: persistedState,
 }: AccountBalanceComponentProps) {
+  const [localState, setLocalState] = useState(persistedState);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [editor] = useLexicalComposerContext();
+
+  function setState(state: AccountBalanceComponentState) {
+    withAccountBalanceNode(
+      (node) => node.setState(state),
+      () => setLocalState(state)
+    );
+  }
 
   const withAccountBalanceNode = (
     cb: (node: AccountBalanceNode) => void,
@@ -97,45 +109,48 @@ export function AccountBalanceComponent({
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
+    mode: "onBlur",
     resolver: zodResolver(formSchema),
     defaultValues: {
-      account: state.account ?? undefined,
-      tickerSymbol: state.tickerSymbol ?? undefined,
+      account: localState.account ?? {
+        address: undefined,
+        chainId: mainnet.id,
+      },
+      tickerSymbol: localState.tickerSymbol ?? undefined,
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     const isEns = values.account.address.endsWith(".eth");
 
     const normalizedAddress = isEns
       ? await getEnsAddress(values.account.address)
       : (values.account.address as Address);
 
-    withAccountBalanceNode((node) =>
-      node.setState({
-        account: {
-          address: normalizedAddress,
-          chainId: values.account.chainId,
-        },
-        tickerSymbol: values.tickerSymbol,
-      })
-    );
+    setState({
+      account: {
+        address: normalizedAddress,
+        chainId: values.account.chainId,
+      },
+      tickerSymbol: values.tickerSymbol,
+    });
+
+    setIsPopoverOpen(false);
   }
 
   return (
-    <Popover>
+    <Popover onOpenChange={setIsPopoverOpen} open={isPopoverOpen}>
       <PopoverTrigger>
-        {isValidState(state) ? (
+        {isValidState(localState) ? (
           <AccountBalanceText
-            account={state.account}
-            tickerSymbol={state.tickerSymbol}
+            account={localState.account}
+            tickerSymbol={localState.tickerSymbol}
           />
         ) : (
-          <span>config</span>
+          <TextPill>config</TextPill>
         )}
       </PopoverTrigger>
-      <PopoverContent>
+      <PopoverContent className="bg-gray-200 rounded-md bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-20 border border-gray-300 shadow-sm">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -194,7 +209,9 @@ export function AccountBalanceComponent({
                 </FormItem>
               )}
             />
-            <Button type="submit">Save</Button>
+            <Button type="submit" size="sm" variant="secondary">
+              Save
+            </Button>
           </form>
         </Form>
       </PopoverContent>
