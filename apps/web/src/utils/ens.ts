@@ -7,7 +7,13 @@ export const publicClient = createPublicClient({
 });
 
 export async function getEnsAddress(ens: string) {
-  return await publicClient.getEnsAddress({
+  const address = await publicClient.getEnsAddress({
     name: ens,
   });
+
+  if (!address) {
+    throw new Error(`No address found for ${ens}`);
+  }
+
+  return address;
 }

@@ -1,7 +1,6 @@
 import { DOMExportOutput, DecoratorNode } from "lexical";
-import { Suspense } from "react";
+import React, { Suspense } from "react";
 import { AccountBalanceComponentState } from "./component";
-import React from "react";
 
 const AccountBalanceComponent = React.lazy(async () =>
   import("./component").then((module) => ({

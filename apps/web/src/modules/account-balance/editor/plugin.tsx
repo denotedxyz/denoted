@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import { $createAccountBalanceNode, AccountBalanceNode } from "./node";
 
 export const INSERT_ACCOUNT_BALANCE_COMMAND: LexicalCommand<null> =
-  createCommand("INSERT_TWEET_COMMAND");
+  createCommand("INSERT_ACCOUNT_BALANCE_COMMAND");
 
 export function AccountBalancePlugin() {
   const [editor] = useLexicalComposerContext();
