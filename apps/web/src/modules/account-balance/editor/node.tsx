@@ -1,4 +1,10 @@
-import { DOMExportOutput, DecoratorNode } from "lexical";
+import {
+  DOMExportOutput,
+  DecoratorNode,
+  LexicalNode,
+  SerializedLexicalNode,
+  Spread,
+} from "lexical";
 import React, { Suspense } from "react";
 import { AccountBalanceComponentState } from "./component";
 
@@ -7,6 +13,11 @@ const AccountBalanceComponent = React.lazy(async () =>
     default: module.AccountBalanceComponent,
   }))
 );
+
+export type SerializedAccountBalanceNode = Spread<
+  AccountBalanceComponentState,
+  SerializedLexicalNode
+>;
 
 export class AccountBalanceNode extends DecoratorNode<JSX.Element> {
   private __state: AccountBalanceComponentState = {
@@ -35,6 +46,24 @@ export class AccountBalanceNode extends DecoratorNode<JSX.Element> {
 
   static clone(node: AccountBalanceNode): AccountBalanceNode {
     return new AccountBalanceNode(node.getState(), node.getKey());
+  }
+
+  static importJSON(
+    _serializedNode: SerializedAccountBalanceNode
+  ): AccountBalanceNode {
+    return $createAccountBalanceNode({
+      account: _serializedNode.account,
+      tickerSymbol: _serializedNode.tickerSymbol,
+    });
+  }
+
+  exportJSON(): SerializedAccountBalanceNode {
+    const state = this.getState();
+    return {
+      version: 1,
+      type: this.getType(),
+      ...state,
+    };
   }
 
   exportDOM(): DOMExportOutput {
@@ -67,8 +96,10 @@ export class AccountBalanceNode extends DecoratorNode<JSX.Element> {
   }
 }
 
-export function $createAccountBalanceNode() {
-  return new AccountBalanceNode();
+export function $createAccountBalanceNode(
+  state?: AccountBalanceComponentState
+) {
+  return new AccountBalanceNode(state);
 }
 
 export function $isAccountBalanceNode(
