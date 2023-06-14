@@ -9,34 +9,33 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@denoted/ui";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $getNodeByKey } from "lexical";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import {
   AccountBalanceText,
   AccountBalanceTextProps,
   TextPill,
 } from "../ui/account-balance-text";
-import { $isAccountBalanceNode, AccountBalanceNode } from "./node";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { $isAccountBalanceNode } from "./node";
 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
+  Input,
 } from "@denoted/ui";
-import { Input } from "@denoted/ui";
-import { SUPPORTED_CHAINS } from "../../../constants/supported-chains";
-import { SupportedChainId } from "../../../core/schemas/account";
-import { Address, getAddress } from "viem";
-import { getEnsAddress } from "../../../utils/ens";
-import { mainnet } from "wagmi";
 import { useState } from "react";
+import { Address } from "viem";
+import { mainnet } from "wagmi";
+import { SUPPORTED_CHAINS } from "../../../constants/supported-chains";
+import { useWithNode } from "../../../core/editor/hooks/useWithNode";
+import { SupportedChainId } from "../../../core/schemas/account";
+import { getEnsAddress } from "../../../utils/ens";
 
 type Nullable<T> = { [Key in keyof T]: T[Key] | null };
 
@@ -86,27 +85,14 @@ export function AccountBalanceComponent({
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [editor] = useLexicalComposerContext();
 
+  const { withNode } = useWithNode(nodeKey, $isAccountBalanceNode);
+
   function setState(state: AccountBalanceComponentState) {
-    withAccountBalanceNode(
+    withNode(
       (node) => node.setState(state),
       () => setLocalState(state)
     );
   }
-
-  const withAccountBalanceNode = (
-    cb: (node: AccountBalanceNode) => void,
-    onUpdate?: () => void
-  ): void => {
-    editor.update(
-      () => {
-        const node = $getNodeByKey(nodeKey);
-        if ($isAccountBalanceNode(node)) {
-          cb(node);
-        }
-      },
-      { onUpdate }
-    );
-  };
 
   const form = useForm<z.infer<typeof formSchema>>({
     mode: "onBlur",

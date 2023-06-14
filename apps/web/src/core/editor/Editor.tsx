@@ -2,6 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import {
+  EmbedConfig,
+  LexicalAutoEmbedPlugin,
+} from "@lexical/react/LexicalAutoEmbedPlugin";
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
 import {
@@ -24,6 +28,7 @@ import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin
 import { FloatingMenuPlugin } from "lexical-floating-menu";
 import TextareaAutosize from "react-textarea-autosize";
 import { modules } from "../../modules";
+import { CommandMenuOption } from "../modules/define";
 import { CORE_EDITOR_NODES } from "./nodes";
 import { AutoLinkPlugin } from "./plugins/AutoLinkPlugin";
 import { CodeHighlightPlugin } from "./plugins/CodeHighlightPlugin";
@@ -38,6 +43,13 @@ type EditorProps = {};
 
 export function Editor({}: EditorProps) {
   const nodes = modules.flatMap((module) => module.editor.nodes);
+  const embeds = modules
+    .flatMap((module) => module.editor.embed)
+    .filter((embed): embed is EmbedConfig => Boolean(embed));
+
+  const commandMenuOptions = modules
+    .flatMap((module) => module.editor.commandMenu)
+    .filter((menu): menu is CommandMenuOption => Boolean(menu));
 
   const initialConfig: InitialConfigType = {
     namespace: "denoted",
@@ -88,6 +100,15 @@ export function Editor({}: EditorProps) {
         <MarkdownShortcutPlugin transformers={DEFAULT_TRANSFORMERS} />
         <TabIndentationPlugin />
         <LinkPlugin />
+        <LexicalAutoEmbedPlugin
+          embedConfigs={embeds}
+          onOpenEmbedModalForConfig={console.log}
+          menuRenderFn={(...args) => {
+            console.log(...args);
+            return null;
+          }}
+          getMenuOptions={() => []}
+        />
         {/*
          * TODO: render this when editor is not editable
          * <LexicalClickableLinkPlugin />
@@ -108,7 +129,7 @@ export function Editor({}: EditorProps) {
             />
           </>
         )}
-        <SlashMenuPlugin />
+        <SlashMenuPlugin options={commandMenuOptions} />
         <TextareaAutosize
           ref={titleRef}
           placeholder={TITLE_PLACEHOLDER}

@@ -15,14 +15,11 @@ import {
 import { $createHeadingNode, $createQuoteNode } from "@lexical/rich-text";
 import { $setBlocksType } from "@lexical/selection";
 import {
-  $createParagraphNode,
   $getSelection,
   $isRangeSelection,
   FORMAT_ELEMENT_COMMAND,
   TextNode,
 } from "lexical";
-import { useCallback, useMemo, useState } from "react";
-import * as ReactDOM from "react-dom";
 import {
   AlignCenter,
   AlignLeft,
@@ -37,20 +34,31 @@ import {
   LucideIcon,
   SplitSquareVertical,
   TextQuote,
-  Wallet,
 } from "lucide-react";
+import { useCallback, useMemo, useState } from "react";
+import * as ReactDOM from "react-dom";
 
 import { Card, CardContent } from "@denoted/ui";
+import groupBy from "lodash.groupby";
+import { CommandMenuOption } from "../../../modules/define";
 import { SlashMenuItem } from "./components/SlashMenuItem";
 import { SlashMenuOption } from "./types";
-import groupBy from "lodash.groupby";
-import { INSERT_ACCOUNT_BALANCE_COMMAND } from "../../../../modules/account-balance/editor/plugin";
 
 function SlashMenuItemIcon({ icon: Icon }: { icon: LucideIcon }) {
   return <Icon className="w-4 h-4" />;
 }
 
-export function SlashMenuPlugin(): JSX.Element {
+function formatMenuOptionIcon(icon: CommandMenuOption["icon"]) {
+  if ("href" in icon) {
+    return <img src={icon.href} className="w-4 h-4" />;
+  }
+
+  return <SlashMenuItemIcon icon={icon} />;
+}
+
+export function SlashMenuPlugin(props: {
+  options: CommandMenuOption[];
+}): JSX.Element {
   const [editor] = useLexicalComposerContext();
   //   const [modal, showModal] = useModal();
   const [queryString, setQueryString] = useState<string | null>(null);
@@ -61,12 +69,15 @@ export function SlashMenuPlugin(): JSX.Element {
 
   const options = useMemo(() => {
     const baseOptions = [
-      new SlashMenuOption("Balance", {
-        icon: <SlashMenuItemIcon icon={Wallet} />,
-        group: "account",
-        onSelect: () =>
-          editor.dispatchCommand(INSERT_ACCOUNT_BALANCE_COMMAND, null),
-      }),
+      ...props.options.map(
+        (option) =>
+          new SlashMenuOption(option.title, {
+            group: option.group,
+            description: option.description,
+            icon: formatMenuOptionIcon(option.icon),
+            onSelect: (query) => option.onSelect(editor, query),
+          })
+      ),
       ...(
         [
           { level: 1, icon: Heading1 },
@@ -167,17 +178,14 @@ export function SlashMenuPlugin(): JSX.Element {
       ),
     ];
 
-    return queryString
-      ? baseOptions.filter((option) => {
-          return new RegExp(queryString, "gi").exec(option.title) ||
-            option.keywords != null
-            ? option.keywords.some((keyword) =>
-                new RegExp(queryString, "gi").exec(keyword)
-              )
-            : false;
-        })
-      : baseOptions;
-  }, [editor, queryString /*, showModal*/]);
+    if (!queryString) {
+      return baseOptions;
+    }
+
+    return baseOptions.filter((option) => {
+      return new RegExp(queryString, "gi").exec(option.title);
+    });
+  }, [editor, queryString]);
 
   const onSelectOption = useCallback(
     (
@@ -221,14 +229,14 @@ export function SlashMenuPlugin(): JSX.Element {
           );
 
           return ReactDOM.createPortal(
-            <Card className="w-64 mt-6">
+            <Card className="w-64 mt-6 bg-gray-200 rounded-md bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-20 border border-gray-300 shadow-sm">
               <CardContent className="p-0">
                 <ul className="list-none m-0 p-0 max-h-80 overflow-y-scroll scrollbar-hide">
                   {Object.entries(groupedOptions).map(
                     ([group, groupOptions]) => {
                       return (
                         <li key={group}>
-                          <h2 className="px-3 py-2 text-xs text-slate-500">
+                          <h2 className="px-3 py-2 text-xs text-gray-600 text-opacity-50">
                             {group}
                           </h2>
                           <ul className="list-none m-0 p-0">

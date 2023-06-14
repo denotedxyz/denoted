@@ -50,20 +50,20 @@ export class AccountBalanceNode extends DecoratorNode<JSX.Element> {
   }
 
   static importJSON(
-    _serializedNode: SerializedAccountBalanceNode
+    serializedNode: SerializedAccountBalanceNode
   ): AccountBalanceNode {
     return $createAccountBalanceNode({
-      account: _serializedNode.account,
-      tickerSymbol: _serializedNode.tickerSymbol,
+      account: serializedNode.account,
+      tickerSymbol: serializedNode.tickerSymbol,
     });
   }
 
   exportJSON(): SerializedAccountBalanceNode {
-    const state = this.getState();
     return {
+      ...super.exportJSON(),
+      ...this.getState(),
       version: 1,
       type: this.getType(),
-      ...state,
     };
   }
 
