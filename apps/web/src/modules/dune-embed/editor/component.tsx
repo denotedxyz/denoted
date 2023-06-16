@@ -1,4 +1,10 @@
-import { Button, Input } from "@denoted/ui";
+import {
+  Button,
+  Input,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@denoted/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BlockWithAlignableContents } from "@lexical/react/LexicalBlockWithAlignableContents";
 import { ElementFormatType, NodeKey } from "lexical";
@@ -7,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useWithNode } from "../../../core/editor/hooks/useWithNode";
 import { $isDuneEmbedNode } from "./node";
+import { MoreVertical } from "lucide-react";
 
 type DuneEmbedComponentState = Readonly<{
   className: Readonly<{
@@ -24,6 +31,33 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+function DuneEmbedForm({
+  onSubmit,
+  defaultValues,
+}: {
+  onSubmit: (data: FormValues) => void;
+  defaultValues?: FormValues;
+}) {
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues,
+  });
+
+  return (
+    <form onSubmit={form.handleSubmit(onSubmit)} className="flex gap-4">
+      <Input
+        {...form.register("data")}
+        placeholder="https://dune.com/embeds/"
+        autoFocus
+        className="w-auto grow"
+      />
+      <Button type="submit" variant="secondary">
+        Save
+      </Button>
+    </form>
+  );
+}
+
 export function DuneEmbedComponent({
   className,
   format,
@@ -33,10 +67,6 @@ export function DuneEmbedComponent({
   const [localQueryId, setLocalQueryId] = useState<string | null>(
     queryId ?? null
   );
-
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-  });
 
   const { withNode } = useWithNode(nodeKey, $isDuneEmbedNode);
 
@@ -61,7 +91,7 @@ export function DuneEmbedComponent({
     }
   }
 
-  console.log({ localQueryId });
+  const src = `https://dune.com/embeds/${localQueryId}`;
 
   return (
     <BlockWithAlignableContents
@@ -70,22 +100,37 @@ export function DuneEmbedComponent({
       nodeKey={nodeKey}
     >
       {localQueryId ? (
-        <iframe
-          className="w-full aspect-video"
-          src={`https://dune.com/embeds/${localQueryId}`}
-          allowFullScreen={true}
-        />
+        <div className="relative group">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                className="opacity-0 z-10 group-hover:opacity-100 absolute p-0 w-8 h-8 top-2 right-2"
+                variant="secondary"
+              >
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              align="end"
+              className="w-auto p-3 bg-gray-200 rounded-md bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-20 border border-gray-300 shadow-sm"
+            >
+              <DuneEmbedForm
+                onSubmit={onSubmit}
+                defaultValues={{
+                  data: src,
+                }}
+              />
+            </PopoverContent>
+          </Popover>
+          <iframe
+            className="w-full aspect-video border border-gray-100 rounded-sm"
+            src={src}
+            allowFullScreen={true}
+          />
+        </div>
       ) : (
         <div className="p-4 w-full bg-gray-50 rounded-md">
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex gap-2">
-            <Input
-              {...form.register("data")}
-              placeholder="https://dune.com/embeds/"
-              autoFocus
-              className="w-auto grow"
-            />
-            <Button type="submit">Save</Button>
-          </form>
+          <DuneEmbedForm onSubmit={onSubmit} />
         </div>
       )}
     </BlockWithAlignableContents>
