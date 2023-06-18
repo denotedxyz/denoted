@@ -36,6 +36,7 @@ import { DraggableBlockPlugin } from "./plugins/DraggableBlockPlugin";
 import { FloatingLinkEditorPlugin } from "./plugins/FloatingLinkEditorPlugin";
 import { FloatingMenu } from "./plugins/FloatingMenu/components/FloatingMenu";
 import { SlashMenuPlugin } from "./plugins/SlashMenu/SlashMenu";
+import { TrailingNodePlugin } from "./plugins/TrailingNodePlugin";
 
 export const TITLE_PLACEHOLDER = "Untitled";
 
@@ -92,7 +93,7 @@ export function Editor({}: EditorProps) {
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div>
+      <div className="flex flex-col grow">
         <AutoFocusPlugin />
         <AutoLinkPlugin />
         <HistoryPlugin />
@@ -116,6 +117,7 @@ export function Editor({}: EditorProps) {
         <CheckListPlugin />
         <HorizontalRulePlugin />
         <CodeHighlightPlugin />
+        <TrailingNodePlugin />
         {editorRef.current && (
           <>
             {modules.map((module) => (
