@@ -40,25 +40,28 @@ import { TrailingNodePlugin } from "./plugins/TrailingNodePlugin";
 
 export const TITLE_PLACEHOLDER = "Untitled";
 
+const moduleNodes = modules.flatMap((module) => module.editor.nodes);
+
+const NODES = [...CORE_EDITOR_NODES, ...moduleNodes];
+
+const embeds = modules
+  .flatMap((module) => module.editor.embed)
+  .filter((embed): embed is EmbedConfig => Boolean(embed));
+
+const commandMenuOptions = modules
+  .flatMap((module) => module.editor.commandMenu)
+  .filter((menu): menu is CommandMenuOption => Boolean(menu));
+
 type EditorProps = {};
 
 export function Editor({}: EditorProps) {
-  const nodes = modules.flatMap((module) => module.editor.nodes);
-  const embeds = modules
-    .flatMap((module) => module.editor.embed)
-    .filter((embed): embed is EmbedConfig => Boolean(embed));
-
-  const commandMenuOptions = modules
-    .flatMap((module) => module.editor.commandMenu)
-    .filter((menu): menu is CommandMenuOption => Boolean(menu));
-
   const initialConfig: InitialConfigType = {
     namespace: "denoted",
     onError: (error) => {
       console.error("Lexical Error:", error);
       throw error;
     },
-    nodes: CORE_EDITOR_NODES.concat(nodes),
+    nodes: NODES,
     theme: {
       link: "cursor-pointer",
       code: "block",
