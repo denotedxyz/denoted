@@ -1,9 +1,9 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
+import { EmbedConfig } from "@lexical/react/LexicalAutoEmbedPlugin";
 import { $insertNodes, COMMAND_PRIORITY_EDITOR, createCommand } from "lexical";
 import { useEffect } from "react";
 import { $createDuneEmbedNode, DuneEmbedNode } from "./node";
-import { EmbedConfig } from "@lexical/react/LexicalAutoEmbedPlugin";
 
 export const INSERT_DUNE_EMBED_COMMAND = createCommand<string | null>(
   "INSERT_DUNE_EMBED_COMMAND"
@@ -38,13 +38,12 @@ export function DuneEmbedPlugin() {
     return editor.registerCommand(
       INSERT_DUNE_EMBED_COMMAND,
       (queryId) => {
-        const node = $createDuneEmbedNode(queryId);
-        $insertNodes([node]);
+        $insertNodes([$createDuneEmbedNode(queryId)]);
         return true;
       },
       COMMAND_PRIORITY_EDITOR
     );
-  });
+  }, [editor]);
 
   return null;
 }

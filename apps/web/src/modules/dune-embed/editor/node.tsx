@@ -22,9 +22,9 @@ export type SerializedDuneEmbedNode = Spread<
 >;
 
 export class DuneEmbedNode extends DecoratorBlockNode {
-  __queryId: string;
+  __queryId: string | null;
 
-  getQueryId(): string {
+  getQueryId() {
     const self = this.getLatest();
     return self.__queryId;
   }
@@ -51,23 +51,23 @@ export class DuneEmbedNode extends DecoratorBlockNode {
   exportJSON(): SerializedDuneEmbedNode {
     return {
       ...super.exportJSON(),
-      queryId: this.getQueryId(),
+      queryId: this.getQueryId() ?? "",
       type: this.getType(),
       version: 1,
     };
   }
 
-  constructor(queryId: string, format?: ElementFormatType, key?: NodeKey) {
+  constructor(
+    queryId: string | null,
+    format?: ElementFormatType,
+    key?: NodeKey
+  ) {
     super(format, key);
     this.__queryId = queryId;
   }
 
   updateDOM(): false {
     return false;
-  }
-
-  getId(): string {
-    return this.__queryId;
   }
 
   getTextContent(
@@ -94,7 +94,7 @@ export class DuneEmbedNode extends DecoratorBlockNode {
   }
 }
 
-export function $createDuneEmbedNode(queryId: string): DuneEmbedNode {
+export function $createDuneEmbedNode(queryId: string | null): DuneEmbedNode {
   return new DuneEmbedNode(queryId);
 }
 
