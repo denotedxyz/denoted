@@ -60,7 +60,6 @@ export class AccountBalanceNode extends DecoratorNode<JSX.Element> {
 
   exportJSON(): SerializedAccountBalanceNode {
     return {
-      ...super.exportJSON(),
       ...this.getState(),
       version: 1,
       type: this.getType(),

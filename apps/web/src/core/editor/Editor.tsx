@@ -37,6 +37,7 @@ import { FloatingLinkEditorPlugin } from "./plugins/FloatingLinkEditorPlugin";
 import { FloatingMenu } from "./plugins/FloatingMenu/components/FloatingMenu";
 import { SlashMenuPlugin } from "./plugins/SlashMenu/SlashMenu";
 import { TrailingNodePlugin } from "./plugins/TrailingNodePlugin";
+import { LocalStoragePlugin } from "./plugins/LocalStoragePlugin";
 
 export const TITLE_PLACEHOLDER = "Untitled";
 
@@ -121,6 +122,7 @@ export function Editor({}: EditorProps) {
         <HorizontalRulePlugin />
         <CodeHighlightPlugin />
         <TrailingNodePlugin />
+        <LocalStoragePlugin pageId={"test"} />
         {editorRef.current && (
           <>
             {modules.map((module) => (

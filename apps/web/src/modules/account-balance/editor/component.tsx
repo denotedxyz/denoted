@@ -35,7 +35,8 @@ import { mainnet } from "wagmi";
 import { SUPPORTED_CHAINS } from "../../../constants/supported-chains";
 import { useWithNode } from "../../../core/editor/hooks/useWithNode";
 import { SupportedChainId } from "../../../core/schemas/account";
-import { getEnsAddress } from "../../../utils/ens";
+import { getNormalizedAddress } from "../../../utils/address";
+import { EnsName } from "../../../utils/ens";
 
 type Nullable<T> = { [Key in keyof T]: T[Key] | null };
 
@@ -61,7 +62,10 @@ const addressSchema = z
   .length(42)
   .refine((value): value is Address => true);
 
-const ensSchema = z.string().endsWith(".eth");
+const ensSchema = z
+  .string()
+  .endsWith(".eth")
+  .refine((value): value is EnsName => true);
 
 const chainIdSchema = z.coerce
   .number()
@@ -107,12 +111,9 @@ export function AccountBalanceComponent({
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const isEns = values.account.address.endsWith(".eth");
-
-    const normalizedAddress = isEns
-      ? await getEnsAddress(values.account.address)
-      : (values.account.address as Address);
-
+    const normalizedAddress = await getNormalizedAddress(
+      values.account.address
+    );
     setState({
       account: {
         address: normalizedAddress,

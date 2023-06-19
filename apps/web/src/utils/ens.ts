@@ -17,3 +17,5 @@ export async function getEnsAddress(ens: string) {
 
   return address;
 }
+
+export type EnsName = `${string}.eth`;

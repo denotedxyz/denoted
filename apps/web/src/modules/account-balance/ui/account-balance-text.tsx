@@ -1,10 +1,11 @@
-import { formatEther } from "viem";
+import { Address, formatEther } from "viem";
 import { useQuery } from "@tanstack/react-query";
 import { AccountBalanceService } from "../service";
 import { Account } from "../../../core/schemas/account";
 import { PropsWithChildren } from "react";
 import { Skeleton, cn } from "@denoted/ui";
 import { AccountBalanceLoading } from "./account-balance-loading";
+import { getEnsAddress } from "../../../utils/ens";
 
 export type AccountBalanceTextProps = {
   account: Account;
@@ -17,8 +18,9 @@ export function AccountBalanceText({
 }: AccountBalanceTextProps) {
   const accountBalanceQuery = useQuery({
     queryKey: ["account-balance", account, tickerSymbol],
-    queryFn: async () =>
-      AccountBalanceService.getAccountBalance(account, tickerSymbol),
+    queryFn: async () => {
+      return AccountBalanceService.getAccountBalance(account, tickerSymbol);
+    },
   });
 
   if (accountBalanceQuery.isLoading) {

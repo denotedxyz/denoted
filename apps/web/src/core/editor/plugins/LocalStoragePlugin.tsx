@@ -8,7 +8,7 @@ function useLocalStorage<T>(
   initialValue: T
 ): [T, (newValue: T) => void] {
   const [value, setValue] = useState<T>(() => {
-    const item = window.localStorage.getItem(key);
+    const item = localStorage.getItem(key);
     if (item) {
       return JSON.parse(item);
     }
@@ -16,18 +16,26 @@ function useLocalStorage<T>(
   });
 
   const setItem = (newValue: T) => {
-    window.localStorage.setItem(key, JSON.stringify(newValue));
+    localStorage.setItem(key, JSON.stringify(newValue));
     setValue(newValue);
   };
 
   return [value, setItem];
 }
 
-export function LocalStoragePlugin() {
+function debounce(fn: Function, ms = 300) {
+  let timeoutId: ReturnType<typeof setTimeout>;
+  return function (this: any, ...args: any[]) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn.apply(this, args), ms);
+  };
+}
+
+export function LocalStoragePlugin({ pageId }: { pageId: string }) {
   const [editor] = useLexicalComposerContext();
   const [serializedEditorState, setSerializedEditorState] = useLocalStorage<
     string | null
-  >("my-editor-state-example-key", null);
+  >(["denoted", "page", pageId].join(":"), null);
 
   const isInitialRenderRef = useRef(true);
   const isInitialRender = isInitialRenderRef.current ?? false;
@@ -51,6 +59,7 @@ export function LocalStoragePlugin() {
     [setSerializedEditorState]
   );
 
-  // TODO: add ignoreSelectionChange
-  return <OnChangePlugin onChange={onChange} />;
+  const debouncedOnChange = useCallback(debounce(onChange), [onChange]);
+
+  return <OnChangePlugin onChange={debouncedOnChange} />;
 }
