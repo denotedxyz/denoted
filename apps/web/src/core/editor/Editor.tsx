@@ -53,9 +53,11 @@ const commandMenuOptions = modules
   .flatMap((module) => module.editor.commandMenu)
   .filter((menu): menu is CommandMenuOption => Boolean(menu));
 
-type EditorProps = {};
+type EditorProps = {
+  pageId: string;
+};
 
-export function Editor({}: EditorProps) {
+export function Editor({ pageId }: EditorProps) {
   const initialConfig: InitialConfigType = {
     namespace: "denoted",
     onError: (error) => {
@@ -122,7 +124,7 @@ export function Editor({}: EditorProps) {
         <HorizontalRulePlugin />
         <CodeHighlightPlugin />
         <TrailingNodePlugin />
-        <LocalStoragePlugin pageId={"test"} />
+        <LocalStoragePlugin pageId={pageId} />
         {editorRef.current && (
           <>
             {modules.map((module) => (
@@ -140,7 +142,7 @@ export function Editor({}: EditorProps) {
         <TextareaAutosize
           ref={titleRef}
           placeholder={TITLE_PLACEHOLDER}
-          className="px-8 mb-8 w-full resize-none text-5xl font-bold leading-tight placeholder:text-slate-200 focus:outline-none"
+          className="px-8 mb-8 w-full resize-none text-5xl font-bold leading-tight placeholder:text-gray-200 focus:outline-none"
           value={title}
           onChange={handleTitleChange}
           required
@@ -154,7 +156,7 @@ export function Editor({}: EditorProps) {
               />
             }
             placeholder={
-              <p className="absolute top-5 left-8 text-slate-300 m-0 select-none pointer-events-none">
+              <p className="absolute top-5 left-8 text-gray-300 m-0 select-none pointer-events-none">
                 Use '/' for commands
               </p>
             }

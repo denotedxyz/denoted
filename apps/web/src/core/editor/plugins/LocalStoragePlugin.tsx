@@ -23,9 +23,9 @@ function useLocalStorage<T>(
   return [value, setItem];
 }
 
-function debounce(fn: Function, ms = 300) {
+function debounce<T extends (...args: any[]) => unknown>(fn: T, ms = 300) {
   let timeoutId: ReturnType<typeof setTimeout>;
-  return function (this: any, ...args: any[]) {
+  return function debounced(this: unknown, ...args: unknown[]) {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => fn.apply(this, args), ms);
   };

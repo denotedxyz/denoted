@@ -18,14 +18,15 @@ import {
   RangeSelection,
   SELECTION_CHANGE_COMMAND,
 } from "lexical";
-import { Dispatch, useCallback, useEffect, useRef, useState } from "react";
 import * as React from "react";
+import { Dispatch, useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
+import { Input, cn, popoverVariants } from "@denoted/ui";
+import { Edit, Trash, X } from "lucide-react";
 import { getSelectedNode } from "../utils/getSelectedNode";
 import { setFloatingElemPositionForLinkEditor } from "../utils/setFloatingElemPositionForLinkEditor";
-import { Input } from "@denoted/ui";
-import { Check, Edit, Trash, X } from "lucide-react";
+import { IconButton } from "./FloatingMenu/components/IconButton";
 
 function FloatingLinkEditor({
   editor,
@@ -37,7 +38,7 @@ function FloatingLinkEditor({
   isLink: boolean;
   setIsLink: Dispatch<boolean>;
   anchorElem: HTMLElement;
-}): JSX.Element {
+}) {
   const linkEditorRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [linkUrl, setLinkUrl] = useState("");
@@ -62,7 +63,7 @@ function FloatingLinkEditor({
     }
     const linkEditorElem = linkEditorRef.current;
     const nativeSelection = window.getSelection();
-    const activeElement = document.activeElement;
+    const activeElement = document?.activeElement;
 
     if (linkEditorElem === null) {
       return;
@@ -88,7 +89,7 @@ function FloatingLinkEditor({
         );
       }
       setLastSelection(selection);
-    } else if (!activeElement || activeElement.className !== "link-input") {
+    } else if (!activeElement || !activeElement.isSameNode(inputRef.current)) {
       if (rootElement !== null) {
         setFloatingElemPositionForLinkEditor(null, linkEditorElem, anchorElem);
       }
@@ -180,26 +181,33 @@ function FloatingLinkEditor({
 
   const handleLinkSubmission = () => {
     if (lastSelection !== null) {
-      if (linkUrl !== "") {
+      if (linkUrl.trim() !== "" && linkUrl.length > "https://".length) {
         editor.dispatchCommand(TOGGLE_LINK_COMMAND, editedLinkUrl);
       }
       setEditMode(false);
     }
   };
 
+  if (!isLink) {
+    return null;
+  }
+
   return (
     <div
       ref={linkEditorRef}
-      className="absolute top-0 left-0 z-10 p-1 will-change-transform opacity-0 flex items-center justify-between"
+      className={cn(
+        popoverVariants(),
+        "absolute top-0 left-0 will-change-transform p-1 opacity-0 flex items-center justify-between"
+      )}
     >
-      {!isLink ? null : isEditMode ? (
-        <div className="flex gap-2">
+      {isEditMode ? (
+        <div className="flex items-center gap-2 pr-1">
           <Input
             ref={inputRef}
             value={editedLinkUrl}
-            // the class `link-input` is used to prevent the editor from closing when the input is focused
-            // NOTE: DO NOT REMOVE
-            className="link-input max-w-md w-full"
+            className="max-w-md w-full"
+            placeholder="https://"
+            autoFocus
             onChange={(event) => {
               setEditedLinkUrl(event.target.value);
             }}
@@ -208,60 +216,39 @@ function FloatingLinkEditor({
             }}
           />
           <div className="flex gap-1">
-            <div
-              role="button"
+            <IconButton
               tabIndex={0}
-              onMouseDown={(event) => event.preventDefault()}
-              onClick={() => {
-                setEditMode(false);
-              }}
-            >
-              <X className="h-4 w-4" />
-            </div>
-
-            <div
-              role="button"
-              tabIndex={0}
-              onMouseDown={(event) => event.preventDefault()}
-              onClick={handleLinkSubmission}
-            >
-              <Check className="h-4 w-4" />
-            </div>
+              icon={X}
+              onClick={() => setEditMode(false)}
+            />
           </div>
         </div>
       ) : (
-        <div className="flex gap-2 px-2 py-1 bg-slate-100 border border-slate-300 rounded-md">
+        <div className="flex gap-2 items-center px-1">
           <a
             href={linkUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="truncate max-w-[10rem] text-slate-700 font-normal text-xs"
+            className="truncate max-w-[10rem] text-gray-700 font-normal text-base"
           >
             {linkUrl}
           </a>
           <div className="flex gap-1">
-            <button
+            <IconButton
               tabIndex={0}
-              onMouseDown={(event) => event.preventDefault()}
+              icon={Edit}
               onClick={() => {
                 setEditedLinkUrl(linkUrl);
                 setEditMode(true);
               }}
-              type="button"
-            >
-              <Edit className="h-4 w-4" />
-            </button>
-            <button
-              className="link-trash"
-              role="button"
+            />
+            <IconButton
               tabIndex={0}
-              onMouseDown={(event) => event.preventDefault()}
+              icon={Trash}
               onClick={() => {
                 editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
               }}
-            >
-              <Trash className="h-4 w-4" />
-            </button>
+            />
           </div>
         </div>
       )}
@@ -323,9 +310,9 @@ function useFloatingLinkEditorToolbar(
 }
 
 export function FloatingLinkEditorPlugin({
-  anchorElem = document.body,
+  anchorElem,
 }: {
-  anchorElem?: HTMLElement;
+  anchorElem: HTMLElement;
 }): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
   return useFloatingLinkEditorToolbar(editor, anchorElem);

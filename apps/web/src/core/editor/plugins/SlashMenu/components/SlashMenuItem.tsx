@@ -37,7 +37,7 @@ export function SlashMenuItem({
       <div className="flex flex-col">
         <p>{option.title}</p>
         {option.description && (
-          <p className="text-xs text-slate-500">{option.description}</p>
+          <p className="text-xs text-gray-500">{option.description}</p>
         )}
       </div>
     </li>

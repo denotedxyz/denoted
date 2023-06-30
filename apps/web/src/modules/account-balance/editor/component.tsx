@@ -50,7 +50,7 @@ type AccountBalanceComponentProps = ModuleBlockComponentProps<{
   state: AccountBalanceComponentState;
 }>;
 
-function isValidState(
+function validateState(
   state: AccountBalanceComponentState
 ): state is AccountBalanceTextProps {
   return Object.values(state).every((value) => value !== null);
@@ -86,7 +86,8 @@ export function AccountBalanceComponent({
   state: persistedState,
 }: AccountBalanceComponentProps) {
   const [localState, setLocalState] = useState(persistedState);
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const isValidState = validateState(localState);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(!isValidState);
   const [editor] = useLexicalComposerContext();
 
   const { withNode } = useWithNode(nodeKey, $isAccountBalanceNode);
@@ -114,6 +115,7 @@ export function AccountBalanceComponent({
     const normalizedAddress = await getNormalizedAddress(
       values.account.address
     );
+
     setState({
       account: {
         address: normalizedAddress,
@@ -128,7 +130,7 @@ export function AccountBalanceComponent({
   return (
     <Popover onOpenChange={setIsPopoverOpen} open={isPopoverOpen}>
       <PopoverTrigger>
-        {isValidState(localState) ? (
+        {isValidState ? (
           <AccountBalanceText
             account={localState.account}
             tickerSymbol={localState.tickerSymbol}
@@ -137,7 +139,10 @@ export function AccountBalanceComponent({
           <TextPill>config</TextPill>
         )}
       </PopoverTrigger>
-      <PopoverContent className="bg-gray-200 rounded-md bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-20 border border-gray-300 shadow-sm">
+      <PopoverContent
+        align="start"
+        className="bg-gray-100 rounded-md bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-20 border border-gray-300 shadow-sm"
+      >
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField

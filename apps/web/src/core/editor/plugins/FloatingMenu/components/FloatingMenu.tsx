@@ -28,6 +28,7 @@ import {
 import { FloatingMenuComponentProps } from "lexical-floating-menu";
 import { getSelectedNode } from "../../../utils/getSelectedNode";
 import { IconButton } from "./IconButton";
+import { cn, popoverVariants } from "@denoted/ui";
 
 export type FloatingMenuState = {
   isBold: boolean;
@@ -99,8 +100,13 @@ export function FloatingMenu({ editor }: FloatingMenuComponentProps) {
   }
 
   return (
-    <div className="flex items-center justify-between bg-slate-100 border-[1px] border-slate-300 rounded-md gap-1">
-      <div className="p-1 gap-1 border-r-[1px] border-slate-300 flex">
+    <div
+      className={cn(
+        popoverVariants(),
+        "flex items-center justify-between gap-1 p-0"
+      )}
+    >
+      <div className="p-1 gap-1 border-r-[1px] border-gray-300 flex">
         <IconButton
           aria-label="Format text as bold"
           active={state.isBold}

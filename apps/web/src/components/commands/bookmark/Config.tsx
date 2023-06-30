@@ -71,7 +71,7 @@ export const BookmarkConfig = (props: CommandExtensionProps<BookmarkProps>) => {
             onOpenChange={setOpen}
             open={isOpen}
           >
-            <PopoverTrigger className="absolute right-2 top-2 rounded-sm border bg-white p-2 opacity-0 hover:bg-slate-100 group-hover:opacity-100">
+            <PopoverTrigger className="absolute right-2 top-2 rounded-sm border bg-white p-2 opacity-0 hover:bg-gray-100 group-hover:opacity-100">
               <MoreHorizontal className="h-4 w-4" />
             </PopoverTrigger>
             <BlockConfigForm
@@ -116,7 +116,7 @@ export const BookmarkConfig = (props: CommandExtensionProps<BookmarkProps>) => {
           </div>
         )}
         {linkPreviewQuery.isLoading && (
-          <div className=" flex w-full overflow-hidden rounded-md border no-underline hover:bg-slate-50">
+          <div className=" flex w-full overflow-hidden rounded-md border no-underline hover:bg-gray-50">
             <div className="flex w-2/3 flex-col gap-1 p-4">
               <Skeleton className="mb-2 h-5 w-full" />
               <Skeleton className="mb-1 h-3 w-full" />
@@ -134,13 +134,13 @@ export const BookmarkConfig = (props: CommandExtensionProps<BookmarkProps>) => {
             href={src}
             target="_blank"
             rel="noreferrer"
-            className=" flex w-full overflow-hidden rounded-md border no-underline hover:bg-slate-50"
+            className=" flex w-full overflow-hidden rounded-md border no-underline hover:bg-gray-50"
           >
             <div className="flex w-2/3 flex-col gap-1 p-4">
               <p className="m-0 truncate text-ellipsis ">
                 {linkPreviewQuery.data?.title}
               </p>
-              <p className="m-0 line-clamp-2 text-sm font-normal text-slate-500">
+              <p className="m-0 line-clamp-2 text-sm font-normal text-gray-500">
                 {linkPreviewQuery.data?.description}
               </p>
               <p className="m-0 mt-2 flex items-center gap-2">
@@ -151,7 +151,7 @@ export const BookmarkConfig = (props: CommandExtensionProps<BookmarkProps>) => {
                   alt="Favicon"
                   className="m-0"
                 />
-                <span className="text-xs font-normal text-slate-400">
+                <span className="text-xs font-normal text-gray-400">
                   {linkPreviewQuery.data?.url}
                 </span>
               </p>

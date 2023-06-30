@@ -553,7 +553,7 @@ function useDraggableBlockMenu(
       <div
         className={cn(
           DRAGGABLE_BLOCK_MENU_CLASSNAME,
-          "transition active:cursor-grabbing cursor-grab will-change-transform absolute left-0 top-0 opacity-0"
+          "transition-opacity active:cursor-grabbing cursor-grab will-change-transform absolute left-0 top-0 opacity-0"
         )}
         ref={menuRef}
         draggable={true}
@@ -569,7 +569,7 @@ function useDraggableBlockMenu(
         />
       </div>
       <div
-        className="absolute pointer-events-none h-1 bg-slate-300 opacity-0 left-0 top-0 will-change-transform"
+        className="absolute pointer-events-none h-1 bg-gray-300 opacity-0 left-0 top-0 will-change-transform"
         ref={targetLineRef}
       />
     </>,
