@@ -121,7 +121,7 @@ export const PublishMenu: React.FC<PublishmenuProps> = ({
         </Button>
       </PopoverTrigger>
       <PopoverContent>
-        <p className="mb-2 text-sm text-slate-500">Publications</p>
+        <p className="mb-2 text-sm text-gray-500">Publications</p>
         <div className="flex w-full flex-col gap-4">
           <Button
             onClick={() => publishMutation.mutate()}
@@ -140,11 +140,11 @@ export const PublishMenu: React.FC<PublishmenuProps> = ({
             return (
               <div className="flex w-full flex-col gap-3" key={publication.id}>
                 <div>
-                  <h3 className="mb-2 text-sm text-slate-500">
+                  <h3 className="mb-2 text-sm text-gray-500">
                     Latest publication
                   </h3>
                   Version {publicationsQuery.data.length}{" "}
-                  <span className="text-sm text-slate-500">
+                  <span className="text-sm text-gray-500">
                     (
                     {formatRelative(
                       new Date(publication.created_at),
@@ -193,7 +193,7 @@ export const PublishMenu: React.FC<PublishmenuProps> = ({
           })}
           {(publicationsQuery.data ?? []).length > 1 && (
             <div>
-              <h3 className="mb-2 text-sm text-slate-500">
+              <h3 className="mb-2 text-sm text-gray-500">
                 Previous publications
               </h3>
               <ol className="grid gap-1">
@@ -203,7 +203,7 @@ export const PublishMenu: React.FC<PublishmenuProps> = ({
                     <li key={publication.id}>
                       <Link href={`/p/${publication.id}`} target="_blank">
                         Version {array.length - index}{" "}
-                        <span className="text-sm text-slate-500">
+                        <span className="text-sm text-gray-500">
                           (
                           {formatRelative(
                             new Date(publication.created_at),

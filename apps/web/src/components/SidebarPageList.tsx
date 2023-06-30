@@ -46,7 +46,7 @@ export function SidebarPageList() {
 
   return (
     <div className="flex flex-col gap-2">
-      <span className="mb-4 block text-sm text-slate-400">Pages</span>
+      <span className="mb-4 block text-sm text-gray-400">Pages</span>
       <ul className="flex flex-col gap-3">
         {myPagesQuery.data?.map((page) => {
           const url = `/${page.id}`;
@@ -58,7 +58,7 @@ export function SidebarPageList() {
                 className={cn(
                   buttonVariants({ variant: "outline" }),
                   "w-full justify-start",
-                  url === pathname && "border-slate-600"
+                  url === pathname && "border-gray-600"
                 )}
               >
                 {page.key ? (

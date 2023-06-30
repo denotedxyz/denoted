@@ -59,7 +59,7 @@ export const Logo = () => {
           </radialGradient>
         </defs>
       </svg>
-      <span className="inline-block rounded-full border border-slate-300 px-1.5 py-0 text-xs text-slate-600">
+      <span className="inline-block rounded-full border border-gray-300 px-1.5 py-0 text-xs text-gray-600">
         alpha
       </span>
     </div>

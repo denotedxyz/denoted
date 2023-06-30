@@ -29,7 +29,7 @@ function AuthStep({
     <li className="flex items-start gap-4">
       <span
         className={cn(
-          "flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md  bg-slate-100 text-slate-500",
+          "flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md  bg-gray-100 text-gray-500",
           completed && "bg-green-500 text-white"
         )}
       >
@@ -44,8 +44,8 @@ function AuthStep({
       </span>
       <div className="flex flex-col items-start gap-4">
         <div className="gap-2">
-          <h2 className="font-medium text-slate-800">{title}</h2>
-          <p className="text-sm text-slate-500">{description}</p>
+          <h2 className="font-medium text-gray-800">{title}</h2>
+          <p className="text-sm text-gray-500">{description}</p>
         </div>
         {children}
       </div>

@@ -228,7 +228,7 @@ export function UpdatePageEditor({ pageId }: { pageId: string }) {
   if (!page) {
     return (
       <div>
-        <h1 className="text-3xl font-bold text-slate-500">Page not found</h1>
+        <h1 className="text-3xl font-bold text-gray-500">Page not found</h1>
       </div>
     );
   }

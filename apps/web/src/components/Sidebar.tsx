@@ -14,7 +14,7 @@ export function Sidebar({ className }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "flex h-full flex-col items-start gap-6 bg-slate-50 p-4",
+        "flex h-full flex-col items-start gap-6 bg-gray-50 p-4",
         className
       )}
     >

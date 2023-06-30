@@ -77,7 +77,7 @@ export const DataPill = ({
     <Badge
       variant="outline"
       className={cn(
-        "text-md relative h-6 border-slate-300 px-1 py-0 font-normal text-inherit",
+        "text-md relative h-6 border-gray-300 px-1 py-0 font-normal text-inherit",
         className
       )}
     >
