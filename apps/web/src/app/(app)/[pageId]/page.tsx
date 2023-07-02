@@ -1,5 +1,5 @@
-import { UpdatePageEditor } from "../../../components/UpdatePageEditor";
+import { Editor } from "../../../core/editor/components/Editor";
 
 export default async function Page({ params }: { params: { pageId: string } }) {
-  return <UpdatePageEditor pageId={params.pageId} />;
+  return <Editor pageId={params.pageId} />;
 }

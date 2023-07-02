@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
   EmbedConfig,
@@ -27,17 +27,25 @@ import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin
 
 import { FloatingMenuPlugin } from "lexical-floating-menu";
 import TextareaAutosize from "react-textarea-autosize";
-import { modules } from "../../modules";
-import { CommandMenuOption } from "../modules/define";
-import { CORE_EDITOR_NODES } from "./nodes";
-import { AutoLinkPlugin } from "./plugins/AutoLinkPlugin";
-import { CodeHighlightPlugin } from "./plugins/CodeHighlightPlugin";
-import { DraggableBlockPlugin } from "./plugins/DraggableBlockPlugin";
-import { FloatingLinkEditorPlugin } from "./plugins/FloatingLinkEditorPlugin";
-import { FloatingMenu } from "./plugins/FloatingMenu/components/FloatingMenu";
-import { SlashMenuPlugin } from "./plugins/SlashMenu/SlashMenu";
-import { TrailingNodePlugin } from "./plugins/TrailingNodePlugin";
-import { LocalStoragePlugin } from "./plugins/LocalStoragePlugin";
+import { modules } from "../../../modules";
+import { CommandMenuOption } from "../../modules/define";
+import { CORE_EDITOR_NODES } from "../nodes";
+import { AutoLinkPlugin } from "../plugins/AutoLinkPlugin";
+import { CodeHighlightPlugin } from "../plugins/CodeHighlightPlugin";
+import { DraggableBlockPlugin } from "../plugins/DraggableBlockPlugin";
+import { FloatingLinkEditorPlugin } from "../plugins/FloatingLinkEditorPlugin";
+import { FloatingMenu } from "../plugins/FloatingMenu/components/FloatingMenu";
+import { SlashMenuPlugin } from "../plugins/SlashMenu/SlashMenu";
+import { TrailingNodePlugin } from "../plugins/TrailingNodePlugin";
+import { StoragePlugin } from "../plugins/StoragePlugin";
+import {
+  useIsFetching,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { Page, PageInput } from "../../page/schema";
+import { pageService } from "../../page/service";
+import { debounce } from "../../../utils/debounce";
 
 export const TITLE_PLACEHOLDER = "Untitled";
 
@@ -82,11 +90,32 @@ export function Editor({ pageId }: EditorProps) {
     },
   };
 
+  const queryClient = useQueryClient();
+
+  const updateTitleMutation = useMutation(
+    async (title: string) => {
+      return await pageService.updateTitle(pageId, title);
+    },
+    {
+      onSuccess: () => {
+        queryClient.refetchQueries(["pages"]);
+      },
+    }
+  );
+
   const [title, setTitle] = useState("");
   const titleRef = useRef<HTMLTextAreaElement>(null);
 
+  const onUpdateTitle = useCallback(
+    debounce((title: string) => {
+      updateTitleMutation.mutate(title);
+    }, 300),
+    []
+  );
+
   function handleTitleChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     setTitle(event.target.value);
+    onUpdateTitle(event.target.value);
   }
 
   useEffect(() => {
@@ -124,7 +153,10 @@ export function Editor({ pageId }: EditorProps) {
         <HorizontalRulePlugin />
         <CodeHighlightPlugin />
         <TrailingNodePlugin />
-        <LocalStoragePlugin pageId={pageId} />
+        <StoragePlugin
+          pageId={pageId}
+          onLoad={(page) => setTitle(page.title)}
+        />
         {editorRef.current && (
           <>
             {modules.map((module) => (

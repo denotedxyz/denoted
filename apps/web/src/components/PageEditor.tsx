@@ -7,7 +7,8 @@ import { useCeramic } from "../hooks/useCeramic";
 import { useLit } from "../hooks/useLit";
 import { deserializePage } from "../utils/page-helper";
 
-import { Editor } from "../core/editor/Editor";
+import { Editor } from "../core/editor/components/Editor";
+import { Page } from "../core/page/schema";
 
 export type SavePageData = {
   page: {
@@ -19,20 +20,10 @@ export type SavePageData = {
 };
 
 type PageEditorProps = {
-  page?: ReturnType<typeof deserializePage>;
-  encryptionKey?: CryptoKey;
-  renderSubmit: (props: {
-    isDisabled: boolean;
-    getData: () => SavePageData;
-  }) => React.ReactNode;
-  mode: "CREATE" | "UPDATE";
+  page?: Page;
 };
 
-export function PageEditor({
-  page,
-  encryptionKey,
-  renderSubmit,
-}: PageEditorProps) {
+export function PageEditor({ page }: PageEditorProps) {
   const [title, setTitle] = useState(page?.title ?? "");
   const titleRef = useRef<HTMLTextAreaElement>(null);
 
@@ -55,20 +46,5 @@ export function PageEditor({
     }
   };
 
-  return (
-    <>
-      {renderSubmit({
-        isDisabled: !isEnabled,
-        getData: () => ({
-          page: {
-            title,
-            content: [],
-          },
-          address: account.address,
-          encryptionKey,
-        }),
-      })}
-      <Editor />
-    </>
-  );
+  return <Editor pageId="1" />;
 }

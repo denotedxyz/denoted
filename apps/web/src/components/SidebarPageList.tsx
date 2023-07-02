@@ -1,80 +1,115 @@
 "use client";
 
-import { cn, buttonVariants } from "@denoted/ui";
+import {
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  buttonVariants,
+  cn,
+} from "@denoted/ui";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useAccount } from "wagmi";
-import { getPagesQuery } from "../composedb/page";
-import { useCeramic } from "../hooks/useCeramic";
-import { useLit } from "../hooks/useLit";
-import { DecryptedText } from "./DecryptedText";
-import { useQuery } from "@tanstack/react-query";
+import { usePathname, useRouter } from "next/navigation";
+import { pageService } from "../core/page/service";
+import { Page } from "../core/page/schema";
+import { MoreVertical, Trash } from "lucide-react";
 
 export function SidebarPageList() {
   const pathname = usePathname();
-  const ceramic = useCeramic();
-  const lit = useLit();
-  const account = useAccount();
+  const router = useRouter();
 
-  const isAuthenticated =
-    account.isConnected &&
-    ceramic.isComposeResourcesSigned &&
-    ceramic.isSessionValid &&
-    lit.isLitAuthenticated;
+  const pagesQuery = useQuery({
+    queryKey: ["pages"],
+    queryFn: async () => {
+      const pages = await pageService.getAll();
+      return pages;
+    },
+  });
 
-  const myPagesQuery = useQuery(
-    ["PAGES", ceramic.composeClient.id],
+  const queryClient = useQueryClient();
+
+  const createPageMutation = useMutation(
     async () => {
-      const query = await getPagesQuery(ceramic.composeClient);
-      const pages = query.data?.pageIndex?.edges.map((edge) => edge.node) ?? [];
-      const myPages = pages.filter((page) => {
-        const isMe =
-          page.createdBy.id.toLowerCase() ===
-          ceramic.composeClient.id.toLowerCase();
-        return isMe && !page.deletedAt;
-      });
-      return myPages;
+      return await pageService.create();
     },
     {
-      enabled: isAuthenticated,
+      onSuccess: (page) => {
+        router.push(`/${page.localId}`);
+        queryClient.setQueryData<Page[]>(["pages"], (pages) => {
+          return pages?.concat(page) ?? [page];
+        });
+      },
     }
   );
 
-  if (!isAuthenticated) {
-    return null;
-  }
+  const deletePageMutation = useMutation(
+    async (pageId: string) => {
+      return await pageService.delete(pageId);
+    },
+    {
+      onSuccess: (pageId) => {
+        queryClient.setQueryData<Page[]>(["pages"], (pages) => {
+          return pages?.filter((page) => page.localId !== pageId) ?? [];
+        });
+        const firstPage = pagesQuery.data?.at(0);
+        router.push(`/${firstPage?.localId}`);
+      },
+    }
+  );
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-3">
       <span className="mb-4 block text-sm text-gray-400">Pages</span>
       <ul className="flex flex-col gap-3">
-        {myPagesQuery.data?.map((page) => {
-          const url = `/${page.id}`;
+        {pagesQuery.data?.map((page) => {
+          const url = `/${page.localId}`;
 
           return (
-            <li key={page.id}>
+            <li key={page.localId} className="relative group">
               <Link
                 href={url}
                 className={cn(
                   buttonVariants({ variant: "outline" }),
-                  "w-full justify-start",
+                  "w-full justify-start truncate block",
                   url === pathname && "border-gray-600"
                 )}
               >
-                {page.key ? (
-                  <DecryptedText
-                    encryptionKey={page.key}
-                    value={page.title}
-                    className="truncate"
-                  />
-                ) : (
-                  <span className="truncate">{page.title}</span>
-                )}
+                {page.title.length > 0 ? page.title : "Untitled"}
               </Link>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="secondary"
+                    className="opacity-0 group-hover:opacity-100 absolute w-6 h-6 p-0 rounded-sm top-1/2 right-2 transform -translate-y-1/2"
+                  >
+                    <MoreVertical className="w-4 h-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem
+                      onClick={() => deletePageMutation.mutate(page.localId)}
+                    >
+                      <Trash className="mr-2 h-4 w-4" />
+                      <span>Delete</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </li>
           );
         })}
       </ul>
+      <Button variant="outline" onClick={() => createPageMutation.mutate()}>
+        New page
+      </Button>
     </div>
   );
 }
