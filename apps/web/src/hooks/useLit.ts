@@ -1,11 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { trackEvent } from "../lib/analytics";
-import { authenticateLit, getIsLitAuthenticated } from "../lib/lit";
-import { useLitContext } from "../contexts/LitContext";
+import { authenticateLit, getIsLitAuthenticated, litClient } from "../lib/lit";
 
 export function useLit() {
-  const { litClient } = useLitContext();
-
   async function authenticate() {
     await authenticateLit(litClient);
     trackEvent("Lit Authenticated");

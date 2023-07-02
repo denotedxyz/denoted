@@ -4,8 +4,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { WagmiConfig, createConfig } from "wagmi";
 import { mainnet } from "viem/chains";
-import { CeramicProvider } from "../contexts/CeramicContext";
-import { LitProvider } from "../contexts/LitContext";
 
 const wagmiConfig = createConfig(
   getDefaultConfig({
@@ -23,11 +21,7 @@ export function Providers({ children }: React.PropsWithChildren) {
   return (
     <QueryClientProvider client={queryClient}>
       <WagmiConfig config={wagmiConfig}>
-        <ConnectKitProvider>
-          <CeramicProvider>
-            <LitProvider>{children}</LitProvider>
-          </CeramicProvider>
-        </ConnectKitProvider>
+        <ConnectKitProvider>{children}</ConnectKitProvider>
       </WagmiConfig>
     </QueryClientProvider>
   );

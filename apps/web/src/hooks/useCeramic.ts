@@ -1,11 +1,11 @@
 import { EthereumWebAuth, getAccountId } from "@didtools/pkh-ethereum";
+import { useQuery } from "@tanstack/react-query";
 import { InjectedConnector } from "@wagmi/core";
 import { DIDSession } from "did-session";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { useAccount } from "wagmi";
 import { trackEvent } from "../lib/analytics";
-import { useCeramicContext } from "../contexts/CeramicContext";
-import { useEffect, useState } from "react";
+import { composeClient } from "../lib/compose";
 
 export const LOCAL_STORAGE_KEYS = {
   DID:
@@ -19,7 +19,6 @@ export const LOCAL_STORAGE_KEYS = {
 };
 
 export function useCeramic() {
-  const { composeClient } = useCeramicContext();
   const { address } = useAccount();
 
   const connector = new InjectedConnector();

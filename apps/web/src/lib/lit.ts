@@ -5,11 +5,9 @@ import {
 } from "@lit-protocol/lit-node-client";
 import { AccsDefaultParams } from "@lit-protocol/types";
 
-export function createLitClient() {
-  return new LitNodeClient({
-    debug: false,
-  });
-}
+export const litClient = new LitNodeClient({
+  debug: false,
+});
 
 export const litChain = "ethereum";
 

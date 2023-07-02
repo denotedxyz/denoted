@@ -1,9 +1,11 @@
 import { z } from "zod";
+import { cryptoKeySchema } from "../../lib/crypto";
 
 const pageContentSchema = z.string();
 
 export const pageSchema = z.object({
-  localId: z.string(),
+  key: cryptoKeySchema.nullable(),
+  localId: z.string().nullable(),
   remoteId: z.string().nullable(),
   title: z.string(),
   content: pageContentSchema,
@@ -20,3 +22,9 @@ const pageInputSchema = pageSchema.pick({
 });
 
 export type PageInput = z.infer<typeof pageInputSchema>;
+
+export const encryptedPageSchema = pageSchema.omit({ key: true }).extend({
+  encryptedKey: z.string(),
+});
+
+export type EncryptedPage = z.infer<typeof encryptedPageSchema>;

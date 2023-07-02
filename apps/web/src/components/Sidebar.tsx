@@ -1,10 +1,18 @@
+"use client";
+
 import { buttonVariants } from "@denoted/ui/src/components/button";
 import { Compass, PenBox } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@denoted/ui";
 import { Footer } from "./Footer";
 import { Logo } from "./Logo";
-import { SidebarPageList } from "./SidebarPageList";
+
+import dynamic from "next/dynamic";
+
+const SidebarPageList = dynamic(
+  () => import("./SidebarPageList").then((module) => module.SidebarPageList),
+  { ssr: false }
+);
 
 type SidebarProps = {
   className?: string;

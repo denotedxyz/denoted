@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useMemo } from "react";
 
 import {
   EmbedConfig,
@@ -46,6 +46,7 @@ import {
 import { Page, PageInput } from "../../page/schema";
 import { pageService } from "../../page/service";
 import { debounce } from "../../../utils/debounce";
+import { useAccount } from "wagmi";
 
 export const TITLE_PLACEHOLDER = "Untitled";
 
@@ -90,11 +91,18 @@ export function Editor({ pageId }: EditorProps) {
     },
   };
 
+  const account = useAccount();
+
+  const service = useMemo(
+    () => pageService(account.address!),
+    [account.address]
+  );
+
   const queryClient = useQueryClient();
 
   const updateTitleMutation = useMutation(
     async (title: string) => {
-      return await pageService.updateTitle(pageId, title);
+      return await service.updateTitle(pageId, title);
     },
     {
       onSuccess: () => {

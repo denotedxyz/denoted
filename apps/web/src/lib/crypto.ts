@@ -1,16 +1,25 @@
+import { z } from "zod";
+
 const ENCRYPTION_ALGORITHM: AesKeyGenParams = {
   name: "AES-CBC",
   length: 256,
 };
 
+export const cryptoKeySchema = z
+  .object({
+    algorithm: z.object({
+      name: z.string(),
+    }),
+    extractable: z.boolean(),
+    type: z.string(),
+    usages: z.array(z.string()),
+  })
+  .refine((key): key is CryptoKey => true);
+
 const KEY_USAGE: readonly KeyUsage[] = ["encrypt", "decrypt"];
 
-export async function generateEncryptionKey() : Promise<CryptoKey> {
-  return crypto.subtle.generateKey(
-    ENCRYPTION_ALGORITHM,
-    true,
-    KEY_USAGE
-  );
+export async function generateEncryptionKey(): Promise<CryptoKey> {
+  return crypto.subtle.generateKey(ENCRYPTION_ALGORITHM, true, KEY_USAGE);
 }
 
 export async function importEncryptionKey(symmetricKey: Uint8Array) {
@@ -22,7 +31,7 @@ export async function importEncryptionKey(symmetricKey: Uint8Array) {
     KEY_USAGE
   );
 
-  return { key };
+  return key;
 }
 
 function arrayBufferToBase64(arrayBuffer: ArrayBuffer): string {
@@ -48,7 +57,7 @@ type EncryptedValue = {
 type EncryptedValueRaw = {
   iv: string;
   encrypted: ArrayBuffer;
-}
+};
 
 export async function encrypt(
   buf: BufferSource,
@@ -73,7 +82,7 @@ export async function encrypt(
 
 export async function decrypt(
   encryptedBuf: BufferSource,
-  iv: string, 
+  iv: string,
   key: CryptoKey
 ): Promise<ArrayBuffer> {
   return crypto.subtle.decrypt(
@@ -82,7 +91,7 @@ export async function decrypt(
       iv: base64ToUint8Array(iv),
     },
     key,
-    encryptedBuf,
+    encryptedBuf
   );
 }
 

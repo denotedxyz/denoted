@@ -6,29 +6,33 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
   buttonVariants,
   cn,
 } from "@denoted/ui";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { MoreVertical, Trash } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useAccount } from "wagmi";
 import { pageService } from "../core/page/service";
-import { Page } from "../core/page/schema";
-import { MoreVertical, Trash } from "lucide-react";
+import { useMemo } from "react";
 
 export function SidebarPageList() {
   const pathname = usePathname();
   const router = useRouter();
 
+  const account = useAccount();
+
+  const service = useMemo(
+    () => pageService(account.address!),
+    [account.address]
+  );
+
   const pagesQuery = useQuery({
     queryKey: ["pages"],
     queryFn: async () => {
-      const pages = await pageService.getAll();
+      const pages = await service.getAll();
       return pages;
     },
   });
@@ -37,27 +41,23 @@ export function SidebarPageList() {
 
   const createPageMutation = useMutation(
     async () => {
-      return await pageService.create();
+      return await service.create();
     },
     {
       onSuccess: (page) => {
         router.push(`/${page.localId}`);
-        queryClient.setQueryData<Page[]>(["pages"], (pages) => {
-          return pages?.concat(page) ?? [page];
-        });
+        queryClient.refetchQueries(["pages"]);
       },
     }
   );
 
   const deletePageMutation = useMutation(
     async (pageId: string) => {
-      return await pageService.delete(pageId);
+      return await service.delete(pageId);
     },
     {
-      onSuccess: (pageId) => {
-        queryClient.setQueryData<Page[]>(["pages"], (pages) => {
-          return pages?.filter((page) => page.localId !== pageId) ?? [];
-        });
+      onSuccess: () => {
+        queryClient.refetchQueries(["pages"]);
         const firstPage = pagesQuery.data?.at(0);
         router.push(`/${firstPage?.localId}`);
       },
@@ -94,11 +94,15 @@ export function SidebarPageList() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuGroup>
-                    <DropdownMenuItem
-                      onClick={() => deletePageMutation.mutate(page.localId)}
-                    >
-                      <Trash className="mr-2 h-4 w-4" />
-                      <span>Delete</span>
+                    <DropdownMenuItem asChild>
+                      <button
+                        onClick={() => deletePageMutation.mutate(page.localId!)}
+                        className="w-full"
+                        type="button"
+                      >
+                        <Trash className="mr-2 h-4 w-4" />
+                        <span>Delete</span>
+                      </button>
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                 </DropdownMenuContent>

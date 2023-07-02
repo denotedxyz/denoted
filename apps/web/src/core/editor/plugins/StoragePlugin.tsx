@@ -2,10 +2,11 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { useMutation } from "@tanstack/react-query";
 import { EditorState } from "lexical";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { pageService } from "../../page/service";
 import { Page } from "../../page/schema";
 import { debounce } from "../../../utils/debounce";
+import { useAccount } from "wagmi";
 
 export function StoragePlugin({
   pageId,
@@ -18,9 +19,16 @@ export function StoragePlugin({
 }) {
   const [editor] = useLexicalComposerContext();
 
+  const account = useAccount();
+
+  const service = useMemo(
+    () => pageService(account.address!),
+    [account.address]
+  );
+
   const pageQuery = useMutation(
     async () => {
-      return await pageService.getById(pageId);
+      return await service.getById(pageId);
     },
     {
       onSuccess: (page) => {
@@ -34,7 +42,7 @@ export function StoragePlugin({
   );
 
   const updateContentMutation = useMutation(async (content: string) => {
-    return await pageService.updateContent(pageId, content);
+    return await service.updateContent(pageId, content);
   });
 
   const isInitialRenderRef = useRef(true);

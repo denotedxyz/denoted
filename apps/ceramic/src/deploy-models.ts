@@ -1,10 +1,8 @@
 import { CeramicClient } from "@ceramicnetwork/http-client";
-import { DID } from "dids";
-import { Ed25519Provider } from "key-did-provider-ed25519";
-import { getResolver } from "key-did-resolver";
-import { fromString } from "uint8arrays/from-string";
+import { createDIDKey } from "did-session";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { fromString } from "uint8arrays/from-string";
 
 import { Composite } from "@composedb/devtools";
 import {
@@ -21,15 +19,12 @@ config({
 export async function createAndDeploy() {
   const privateKey = fromString(process.env.DID_PRIVATE_KEY as string, "hex");
 
-  const did = new DID({
-    resolver: getResolver(),
-    provider: new Ed25519Provider(privateKey),
-  });
+  const did = await createDIDKey(privateKey);
 
   await did.authenticate();
 
   const ceramic = new CeramicClient(process.env.CERAMIC_API_URL);
-  ceramic.did = did;
+  ceramic.setDID(did);
 
   const composites: Composite[] = [];
 

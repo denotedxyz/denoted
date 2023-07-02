@@ -86,13 +86,13 @@ type PageEdge {
 
 type Page implements Node {
   id: ID!
-  key: String
-  data: [PageNode]
-  type: String!
   title: String!
+  content: String!
+  localId: String!
   createdAt: DateTime!
   deletedAt: DateTime
   updatedAt: DateTime
+  encryptedKey: String
 
   """Current version of the document"""
   version: CeramicCommitID!
@@ -105,14 +105,6 @@ type Page implements Node {
 
   """Account controlling the document"""
   updatedBy: CeramicAccount!
-}
-
-type PageNode {
-  text: String
-  type: String!
-  attrs: String
-  marks: String
-  content: String
 }
 
 """
@@ -147,21 +139,13 @@ input CreatePageInput {
 }
 
 input PageInput {
-  key: String
-  data: [PageNodeInput]
-  type: String!
   title: String!
+  content: String!
+  localId: String!
   createdAt: DateTime!
   deletedAt: DateTime
   updatedAt: DateTime
-}
-
-input PageNodeInput {
-  text: String
-  type: String!
-  attrs: String
-  marks: String
-  content: String
+  encryptedKey: String
 }
 
 type UpdatePagePayload {
@@ -185,13 +169,13 @@ input UpdatePageInput {
 }
 
 input PartialPageInput {
-  key: String
-  data: [PageNodeInput]
-  type: String
   title: String
+  content: String
+  localId: String
   createdAt: DateTime
   deletedAt: DateTime
   updatedAt: DateTime
+  encryptedKey: String
 }
 
 input UpdateOptionsInput {
