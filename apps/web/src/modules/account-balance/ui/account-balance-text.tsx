@@ -1,4 +1,4 @@
-import { Address, formatEther } from "viem";
+import { Address, formatEther, formatUnits } from "viem";
 import { useQuery } from "@tanstack/react-query";
 import { AccountBalanceService } from "../service";
 import { Account } from "../../../core/schemas/account";
@@ -28,13 +28,18 @@ export function AccountBalanceText({
   }
 
   if (accountBalanceQuery.isError) {
+    console.log(accountBalanceQuery.error);
     return <TextPill>{JSON.stringify(accountBalanceQuery.error)}</TextPill>;
   }
 
+  const formatted = formatUnits(
+    BigInt(accountBalanceQuery?.data?.balance),
+    accountBalanceQuery.data.decimals
+  );
+
   return (
     <TextPill>
-      {formatEther(BigInt(accountBalanceQuery?.data?.balance)).substring(0, 5)}{" "}
-      {tickerSymbol}
+      {formatted} {accountBalanceQuery.data.tickerSymbol}
     </TextPill>
   );
 }

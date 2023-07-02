@@ -26,6 +26,7 @@ export class AccountBalanceService {
     return data.items.map<AccountBalance>((item) => ({
       tickerSymbol: item.contract_ticker_symbol,
       balance: z.coerce.number().parse(item.balance),
+      decimals: item.contract_decimals,
     }));
   }
 
@@ -35,7 +36,8 @@ export class AccountBalanceService {
   ): Promise<AccountBalance> {
     const balances = await this.getAccountBalances(account);
     const balance = balances.find(
-      (balance) => balance.tickerSymbol === tickerSymbol
+      (balance) =>
+        balance.tickerSymbol.toLowerCase() === tickerSymbol.toLowerCase()
     );
 
     if (!balance) {

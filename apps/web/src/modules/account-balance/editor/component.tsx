@@ -121,7 +121,7 @@ export function AccountBalanceComponent({
         address: normalizedAddress,
         chainId: values.account.chainId,
       },
-      tickerSymbol: values.tickerSymbol,
+      tickerSymbol: values.tickerSymbol.toUpperCase(),
     });
 
     setIsPopoverOpen(false);
