@@ -194,7 +194,7 @@ class PageService {
   }
 }
 
-export function pageService(userAddress: Address) {
+export function createPageService(userAddress: Address) {
   return new PageService(
     userAddress,
     new PageCacheRepository(),

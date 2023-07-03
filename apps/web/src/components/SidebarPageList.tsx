@@ -14,25 +14,18 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { MoreVertical, Trash } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useAccount } from "wagmi";
-import { pageService } from "../core/page/service";
-import { useMemo } from "react";
+import { usePageService } from "../core/hooks/use-page-service";
 
 export function SidebarPageList() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const account = useAccount();
-
-  const service = useMemo(
-    () => pageService(account.address!),
-    [account.address]
-  );
+  const pageService = usePageService();
 
   const pagesQuery = useQuery({
     queryKey: ["pages"],
     queryFn: async () => {
-      const pages = await service.getAll();
+      const pages = await pageService.getAll();
       return pages;
     },
   });
@@ -41,7 +34,7 @@ export function SidebarPageList() {
 
   const createPageMutation = useMutation(
     async () => {
-      return await service.create();
+      return await pageService.create();
     },
     {
       onSuccess: (page) => {
@@ -53,7 +46,7 @@ export function SidebarPageList() {
 
   const deletePageMutation = useMutation(
     async (pageId: string) => {
-      return await service.delete(pageId);
+      return await pageService.delete(pageId);
     },
     {
       onSuccess: () => {

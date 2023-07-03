@@ -25,10 +25,10 @@ import {
   Underline,
 } from "lucide-react";
 
-import { FloatingMenuComponentProps } from "lexical-floating-menu";
 import { getSelectedNode } from "../../../utils/getSelectedNode";
 import { IconButton } from "./IconButton";
 import { cn, popoverVariants } from "@denoted/ui";
+import { FloatingMenuComponentProps } from "../FloatingMenuPlugin";
 
 export type FloatingMenuState = {
   isBold: boolean;
