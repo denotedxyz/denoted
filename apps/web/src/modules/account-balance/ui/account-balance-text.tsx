@@ -31,11 +31,15 @@ export function AccountBalanceText({
     console.log(accountBalanceQuery.error);
     return <TextPill>{JSON.stringify(accountBalanceQuery.error)}</TextPill>;
   }
-
-  const formatted = formatUnits(
+  const units = formatUnits(
     BigInt(accountBalanceQuery?.data?.balance),
     accountBalanceQuery.data.decimals
   );
+
+  const [integer, decimal] = units.split(".").map((s) => s.trim());
+  const formattedDecimal = decimal.slice(0, Math.min(3, decimal.length - 4));
+  const formatted =
+    formattedDecimal.length > 0 ? `${integer}.${formattedDecimal}` : integer;
 
   return (
     <TextPill>
