@@ -6,13 +6,14 @@ import {
 } from "@lexical/react/LexicalComposer";
 import { TitleEditor } from "./TitleEditor";
 
+import { Skeleton } from "@denoted/ui";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { EditorThemeClasses } from "lexical";
+import debounce from "lodash.debounce";
+import { useCallback } from "react";
 import { modules } from "../../../modules";
 import { usePageService } from "../../hooks/use-page-service";
 import { CORE_EDITOR_NODES } from "../nodes";
-import { useCallback } from "react";
-import debounce from "lodash.debounce";
 import { ContentEditor } from "./ContentEditor";
 
 const moduleNodes = modules.flatMap((module) => module.editor.nodes);
@@ -47,6 +48,10 @@ export function PageEditor({ pageId }: PageEditorProps) {
     queryFn: async () => await pageService.getById(pageId),
     cacheTime: Infinity,
     staleTime: Infinity,
+    retry: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
 
   const queryClient = useQueryClient();
@@ -73,7 +78,26 @@ export function PageEditor({ pageId }: PageEditorProps) {
   );
 
   if (pageQuery.isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex flex-col grow gap-8 pt-14">
+        <Skeleton className="w-full h-16 mb" />
+        <div className="grid gap-4">
+          <Skeleton className="w-full h-8" />
+          <Skeleton className="w-full h-8" />
+          <Skeleton className="w-full h-8" />
+          <Skeleton className="w-full h-8" />
+          <Skeleton className="w-full h-8" />
+        </div>
+      </div>
+    );
+  }
+
+  if (pageQuery.isError) {
+    return (
+      <div className="grid place-content-center h-full w-full">
+        <h1 className="text-2xl">Page not found 🤔</h1>
+      </div>
+    );
   }
 
   const initialConfig: InitialConfigType = {
@@ -89,7 +113,7 @@ export function PageEditor({ pageId }: PageEditorProps) {
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="flex flex-col grow">
+      <div className="flex flex-col grow gap-8 pt-14">
         <TitleEditor
           onChange={debouncedUpdateTitle}
           initial={pageQuery.data?.title ?? ""}

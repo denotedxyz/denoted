@@ -3,6 +3,9 @@ import { PageCacheRepository, PageRepository } from "./repository";
 import { EncryptedPage, Page, PageInput } from "./schema";
 
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
+import { Address } from "viem";
+import { ComposeApiClient } from "../../composedb/api";
+import { composeClient } from "../../lib/compose";
 import {
   decryptString,
   encryptString,
@@ -14,9 +17,6 @@ import {
   litClient,
   storeEncryptionKey,
 } from "../../lib/lit";
-import { composeClient } from "../../lib/compose";
-import { ComposeApiClient } from "../../composedb/api";
-import { Address } from "viem";
 
 export async function importStoredEncryptionKey(
   key: string,
@@ -46,25 +46,33 @@ class PageService {
       localId: id,
       remoteId: null,
       title: input?.title ?? "",
-      content: input?.content ?? "",
+      content: input?.content ?? null,
       createdAt: new Date(),
       updatedAt: new Date(),
       deletedAt: null,
     };
 
-    const encryptionKey = await generateEncryptionKey();
-
-    const encryptedPage = await this.encrypt(
-      page,
-      this.userAddress,
-      encryptionKey
-    );
-    const remotePage = await this.pageRepository.create(encryptedPage);
-
-    page.remoteId = remotePage.remoteId;
-    page.key = encryptionKey;
-
     await this.pageCacheRepository.update(id, page);
+
+    try {
+      const encryptionKey = await generateEncryptionKey();
+
+      const encryptedPage = await this.encrypt(
+        page,
+        this.userAddress,
+        encryptionKey
+      );
+
+      const { remoteId } = await this.pageRepository.create(encryptedPage);
+
+      await this.pageCacheRepository.update(id, {
+        ...page,
+        key: encryptionKey,
+        remoteId,
+      });
+    } catch (error) {
+      console.log("Error creating page", error);
+    }
 
     return page;
   }
@@ -82,13 +90,17 @@ class PageService {
       updatedAt: new Date(),
     });
 
-    const encryptedPage = await this.encrypt(
-      updatedPage,
-      this.userAddress,
-      updatedPage.key!
-    );
+    try {
+      const encryptedPage = await this.encrypt(
+        updatedPage,
+        this.userAddress,
+        updatedPage.key!
+      );
 
-    await this.pageRepository.update(page.remoteId!, encryptedPage);
+      await this.pageRepository.update(page.remoteId!, encryptedPage);
+    } catch (error) {
+      console.log("Error updating page title", error);
+    }
 
     return updatedPage;
   }
@@ -106,13 +118,17 @@ class PageService {
       updatedAt: new Date(),
     });
 
-    const encryptedPage = await this.encrypt(
-      updatedPage,
-      this.userAddress,
-      updatedPage.key!
-    );
+    try {
+      const encryptedPage = await this.encrypt(
+        updatedPage,
+        this.userAddress,
+        updatedPage.key!
+      );
 
-    await this.pageRepository.update(page.remoteId!, encryptedPage);
+      await this.pageRepository.update(page.remoteId!, encryptedPage);
+    } catch (error) {
+      console.log("Error updating page content", error);
+    }
 
     return updatedPage;
   }
@@ -162,7 +178,7 @@ class PageService {
   ): Promise<EncryptedPage> {
     const [title, content] = await Promise.all([
       await encryptString(page.title, encryptionKey),
-      await encryptString(page.content, encryptionKey),
+      page.content ? await encryptString(page.content, encryptionKey) : null,
     ]);
 
     const { encryptedKey } = await storeEncryptionKey(

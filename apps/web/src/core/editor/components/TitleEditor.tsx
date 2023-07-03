@@ -40,7 +40,7 @@ export function TitleEditor({ initial, onChange }: TitleEditorProps) {
     <TextareaAutosize
       ref={titleRef}
       placeholder={TITLE_PLACEHOLDER}
-      className="px-8 mb-8 w-full resize-none text-5xl font-bold leading-tight placeholder:text-gray-200 focus:outline-none"
+      className="px-8 w-full resize-none text-5xl font-bold leading-tight placeholder:text-gray-200 focus:outline-none"
       value={title}
       onChange={handleTitleChange}
       onKeyDown={handleKeyDown}

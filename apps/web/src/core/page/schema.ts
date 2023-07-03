@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { cryptoKeySchema } from "../../lib/crypto";
 
-const pageContentSchema = z.string();
+const pageContentSchema = z.string().nullable();
 
 export const pageSchema = z.object({
   key: cryptoKeySchema.nullable(),
