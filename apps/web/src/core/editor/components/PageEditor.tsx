@@ -10,7 +10,7 @@ import { Skeleton } from "@denoted/ui";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { EditorThemeClasses } from "lexical";
 import debounce from "lodash.debounce";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { modules } from "../../../modules";
 import { usePageService } from "../../hooks/use-page-service";
 import { CORE_EDITOR_NODES } from "../nodes";
@@ -41,6 +41,10 @@ type PageEditorProps = {
 };
 
 export function PageEditor({ pageId }: PageEditorProps) {
+  const [isSaving, setIsSaving] = useState(false);
+
+  const setIsSavingDebounced = useCallback(debounce(setIsSaving, 500), []);
+
   const pageService = usePageService();
 
   const pageQuery = useQuery({
@@ -60,21 +64,25 @@ export function PageEditor({ pageId }: PageEditorProps) {
     mutationFn: async (title: string) =>
       await pageService.updateTitle(pageId, title),
     onSuccess: () => queryClient.refetchQueries(["pages"]),
+    onMutate: () => setIsSaving(true),
+    onSettled: () => setIsSavingDebounced(false),
   });
-
-  const debouncedUpdateTitle = useCallback(
-    debounce(updateTitleMutation.mutate, 300),
-    []
-  );
 
   const updateContentMutation = useMutation({
     mutationFn: async (content: string) =>
       await pageService.updateContent(pageId, content),
+    onMutate: () => setIsSaving(true),
+    onSettled: () => setIsSavingDebounced(false),
   });
+
+  const debouncedUpdateTitle = useCallback(
+    debounce(updateTitleMutation.mutate, 300),
+    [updateTitleMutation.mutate]
+  );
 
   const debouncedUpdateContent = useCallback(
     debounce(updateContentMutation.mutate, 300),
-    []
+    [updateContentMutation.mutate]
   );
 
   if (pageQuery.isLoading) {
@@ -111,15 +119,39 @@ export function PageEditor({ pageId }: PageEditorProps) {
     editorState: pageQuery.data?.content,
   };
 
+  const isUpdateSuccess = [updateTitleMutation, updateContentMutation].every(
+    (mutation) => mutation.isSuccess || mutation.isIdle
+  );
+
+  const isUpdateError = [updateTitleMutation, updateContentMutation].some(
+    (mutation) => mutation.isError
+  );
+  const updateError = [updateTitleMutation, updateContentMutation]
+    .map((mutation) => mutation.error)
+    .find((error) => error !== undefined);
+
   return (
-    <LexicalComposer initialConfig={initialConfig}>
-      <div className="flex flex-col grow gap-8 pt-14">
-        <TitleEditor
-          onChange={debouncedUpdateTitle}
-          initial={pageQuery.data?.title ?? ""}
-        />
-        <ContentEditor onChange={debouncedUpdateContent} />
+    <div>
+      <div className="bg-gray-100 text-gray-500 inline-block text-sm px-2 py-1 rounded-sm">
+        {isSaving && "Saving..."}
+        {!isSaving && isUpdateSuccess && "Saved"}
+        {!isSaving && isUpdateError && (
+          <span>
+            {updateError instanceof Error
+              ? updateError.message
+              : "Unknown error"}
+          </span>
+        )}
       </div>
-    </LexicalComposer>
+      <div key={pageId} className="flex flex-col grow gap-8 pt-14">
+        <LexicalComposer initialConfig={initialConfig}>
+          <TitleEditor
+            onChange={debouncedUpdateTitle}
+            initial={pageQuery.data?.title ?? ""}
+          />
+          <ContentEditor onChange={debouncedUpdateContent} />
+        </LexicalComposer>
+      </div>
+    </div>
   );
 }
