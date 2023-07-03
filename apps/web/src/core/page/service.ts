@@ -10,39 +10,24 @@ import {
   decryptString,
   encryptString,
   generateEncryptionKey,
-  importEncryptionKey,
 } from "../../lib/crypto";
-import {
-  getStoredEncryptionKey,
-  litClient,
-  storeEncryptionKey,
-} from "../../lib/lit";
-
-export async function importStoredEncryptionKey(
-  key: string,
-  userAddress: string,
-  litClient: LitNodeClient
-) {
-  const { encryptionKey } = await getStoredEncryptionKey(
-    key,
-    userAddress,
-    litClient
-  );
-  return await importEncryptionKey(encryptionKey);
-}
+import { litClient, storeEncryptionKey } from "../../lib/lit";
+import { importStoredEncryptionKey } from "./utils";
 
 class PageService {
   constructor(
-    private readonly userAddress: Address,
     private readonly pageCacheRepository: PageCacheRepository,
     private readonly pageRepository: PageRepository,
-    private readonly litClient: LitNodeClient
+    private readonly litClient: LitNodeClient,
+    private readonly userAddress?: Address
   ) {}
 
   async create(input?: PageInput): Promise<Page> {
     const id = nanoid(8);
+    const encryptionKey = await generateEncryptionKey();
+
     const page: Page = {
-      key: null,
+      key: encryptionKey,
       localId: id,
       remoteId: null,
       title: input?.title ?? "",
@@ -54,24 +39,23 @@ class PageService {
 
     await this.pageCacheRepository.update(id, page);
 
-    try {
-      const encryptionKey = await generateEncryptionKey();
+    if (this.userAddress) {
+      try {
+        const encryptedPage = await this.encrypt(
+          page,
+          this.userAddress,
+          encryptionKey
+        );
 
-      const encryptedPage = await this.encrypt(
-        page,
-        this.userAddress,
-        encryptionKey
-      );
+        const { remoteId } = await this.pageRepository.create(encryptedPage);
 
-      const { remoteId } = await this.pageRepository.create(encryptedPage);
-
-      await this.pageCacheRepository.update(id, {
-        ...page,
-        key: encryptionKey,
-        remoteId,
-      });
-    } catch (error) {
-      console.log("Error creating page", error);
+        await this.pageCacheRepository.update(id, {
+          ...page,
+          remoteId,
+        });
+      } catch (error) {
+        console.log("Error creating page", error);
+      }
     }
 
     return page;
@@ -90,16 +74,26 @@ class PageService {
       updatedAt: new Date(),
     });
 
-    try {
-      const encryptedPage = await this.encrypt(
-        updatedPage,
-        this.userAddress,
-        updatedPage.key!
-      );
+    if (this.userAddress) {
+      if (!updatedPage.remoteId) {
+        throw new Error("Page remoteId not found");
+      }
 
-      await this.pageRepository.update(page.remoteId!, encryptedPage);
-    } catch (error) {
-      console.log("Error updating page title", error);
+      if (!updatedPage.key) {
+        throw new Error("Page key not found");
+      }
+
+      try {
+        const encryptedPage = await this.encrypt(
+          updatedPage,
+          this.userAddress,
+          updatedPage.key
+        );
+
+        await this.pageRepository.update(updatedPage.remoteId, encryptedPage);
+      } catch (error) {
+        console.log("Error updating page title", error);
+      }
     }
 
     return updatedPage;
@@ -118,16 +112,26 @@ class PageService {
       updatedAt: new Date(),
     });
 
-    try {
-      const encryptedPage = await this.encrypt(
-        updatedPage,
-        this.userAddress,
-        updatedPage.key!
-      );
+    if (this.userAddress) {
+      if (!updatedPage.remoteId) {
+        throw new Error("Page remoteId not found");
+      }
 
-      await this.pageRepository.update(page.remoteId!, encryptedPage);
-    } catch (error) {
-      console.log("Error updating page content", error);
+      if (!updatedPage.key) {
+        throw new Error("Page key not found");
+      }
+
+      try {
+        const encryptedPage = await this.encrypt(
+          updatedPage,
+          this.userAddress,
+          updatedPage.key
+        );
+
+        await this.pageRepository.update(updatedPage.remoteId, encryptedPage);
+      } catch (error) {
+        console.log("Error updating page content", error);
+      }
     }
 
     return updatedPage;
@@ -140,25 +144,33 @@ class PageService {
       return cachedPage;
     }
 
-    const pages = await this.pageRepository.getAll();
+    if (this.userAddress) {
+      const pages = await this.pageRepository.getAll();
 
-    const remotePage = pages.find((page) => page.localId === id);
+      const remotePage = pages.find((page) => page.localId === id);
 
-    if (!remotePage) {
-      throw new Error("Page not found");
+      if (!remotePage) {
+        throw new Error("Page not found");
+      }
+
+      if (!remotePage.encryptedKey) {
+        throw new Error("Page encryptedKey not found");
+      }
+
+      const storedEncryptionKey = await importStoredEncryptionKey(
+        remotePage.encryptedKey,
+        this.userAddress,
+        this.litClient
+      );
+
+      const page = await this.decrypt(remotePage, storedEncryptionKey);
+
+      await this.pageCacheRepository.update(id, page);
+
+      return page;
     }
 
-    const storedEncryptionKey = await importStoredEncryptionKey(
-      remotePage.encryptedKey!,
-      this.userAddress,
-      this.litClient
-    );
-
-    const page = await this.decrypt(remotePage, storedEncryptionKey);
-
-    await this.pageCacheRepository.update(id, page);
-
-    return page;
+    throw new Error("Page not found");
   }
 
   async getAll() {
@@ -210,11 +222,11 @@ class PageService {
   }
 }
 
-export function createPageService(userAddress: Address) {
+export function createPageService(userAddress?: Address) {
   return new PageService(
-    userAddress,
     new PageCacheRepository(),
     new PageRepository(new ComposeApiClient(composeClient)),
-    litClient
+    litClient,
+    userAddress
   );
 }

@@ -6,7 +6,7 @@ export function usePageService() {
   const account = useAccount();
 
   const pageService = useMemo(
-    () => createPageService(account.address!),
+    () => createPageService(account.address),
     [account.address]
   );
 
