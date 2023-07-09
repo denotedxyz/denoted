@@ -13,13 +13,14 @@ import {
 } from "../../lib/crypto";
 import { litClient, storeEncryptionKey } from "../../lib/lit";
 import { importStoredEncryptionKey } from "./utils";
+import { User } from "../../contexts/user-context";
 
 class PageService {
   constructor(
     private readonly pageCacheRepository: PageCacheRepository,
     private readonly pageRepository: PageRepository,
     private readonly litClient: LitNodeClient,
-    private readonly userAddress?: Address
+    private readonly user: User
   ) {}
 
   async create(input?: PageInput): Promise<Page> {
@@ -39,11 +40,11 @@ class PageService {
 
     await this.pageCacheRepository.update(id, page);
 
-    if (this.userAddress) {
+    if (this.user) {
       try {
         const encryptedPage = await this.encrypt(
           page,
-          this.userAddress,
+          this.user.address,
           encryptionKey
         );
 
@@ -74,7 +75,7 @@ class PageService {
       updatedAt: new Date(),
     });
 
-    if (this.userAddress) {
+    if (this.user) {
       if (!updatedPage.remoteId) {
         throw new Error("Page remoteId not found");
       }
@@ -86,7 +87,7 @@ class PageService {
       try {
         const encryptedPage = await this.encrypt(
           updatedPage,
-          this.userAddress,
+          this.user.address,
           updatedPage.key
         );
 
@@ -112,7 +113,7 @@ class PageService {
       updatedAt: new Date(),
     });
 
-    if (this.userAddress) {
+    if (this.user) {
       if (!updatedPage.remoteId) {
         throw new Error("Page remoteId not found");
       }
@@ -124,7 +125,7 @@ class PageService {
       try {
         const encryptedPage = await this.encrypt(
           updatedPage,
-          this.userAddress,
+          this.user.address,
           updatedPage.key
         );
 
@@ -144,7 +145,7 @@ class PageService {
       return cachedPage;
     }
 
-    if (this.userAddress) {
+    if (this.user) {
       const pages = await this.pageRepository.getAll();
 
       const remotePage = pages.find((page) => page.localId === id);
@@ -159,7 +160,7 @@ class PageService {
 
       const storedEncryptionKey = await importStoredEncryptionKey(
         remotePage.encryptedKey,
-        this.userAddress,
+        this.user.address,
         this.litClient
       );
 
@@ -222,11 +223,11 @@ class PageService {
   }
 }
 
-export function createPageService(userAddress?: Address) {
+export function createPageService(user: User) {
   return new PageService(
     new PageCacheRepository(),
     new PageRepository(new ComposeApiClient(composeClient)),
     litClient,
-    userAddress
+    user
   );
 }

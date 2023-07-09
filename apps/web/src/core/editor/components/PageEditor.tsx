@@ -15,6 +15,7 @@ import { modules } from "../../../modules";
 import { usePageService } from "../../hooks/use-page-service";
 import { CORE_EDITOR_NODES } from "../nodes";
 import { ContentEditor } from "./ContentEditor";
+import { useUser } from "../../../contexts/user-context";
 
 const moduleNodes = modules.flatMap((module) => module.editor.nodes);
 
@@ -44,6 +45,8 @@ export function PageEditor({ pageId }: PageEditorProps) {
   const [isSaving, setIsSaving] = useState(false);
 
   const setIsSavingDebounced = useCallback(debounce(setIsSaving, 500), []);
+
+  const user = useUser();
 
   const pageService = usePageService();
 
@@ -132,6 +135,13 @@ export function PageEditor({ pageId }: PageEditorProps) {
 
   return (
     <div>
+      {!user?.isAuthenticated && (
+        <div>
+          <div className="bg-yellow-100 text-yellow-500 inline-block text-sm px-2 py-1 rounded-sm">
+            You are not logged in. Changes will not be saved.
+          </div>
+        </div>
+      )}
       <div className="bg-gray-100 text-gray-500 inline-block text-sm px-2 py-1 rounded-sm">
         {isSaving && "Saving..."}
         {!isSaving && isUpdateSuccess && "Saved"}

@@ -1,15 +1,12 @@
 "use client";
 
-import { PropsWithChildren, useRef, useEffect, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { Button, cn } from "@denoted/ui";
+import { CheckCircle2, Circle, Loader2, Wallet } from "lucide-react";
+import { PropsWithChildren } from "react";
 import { useAccount } from "wagmi";
-import { useCeramic } from "../hooks/useCeramic";
+import { useCompose } from "../hooks/useCompose";
 import { useCustomConnect } from "../hooks/useCustomConnect";
 import { useLit } from "../hooks/useLit";
-import { trackEvent } from "../lib/analytics";
-import { cn } from "@denoted/ui";
-import { Button } from "@denoted/ui";
-import { Loader2, Wallet, Circle, CheckCircle2 } from "lucide-react";
 
 type AuthStepProps = PropsWithChildren<{
   title: string;
@@ -64,33 +61,8 @@ export function AuthSteps() {
     eventProperties: fromAuthSteps,
   });
 
-  const ceramic = useCeramic();
+  const compose = useCompose();
   const lit = useLit();
-
-  const authenticateCeramicMutation = useMutation(
-    async () => {
-      return await ceramic.authenticate();
-    },
-    {
-      onMutate: () => {
-        trackEvent("Ceramic Authenticate Clicked", fromAuthSteps);
-      },
-    }
-  );
-
-  const authenticateLitMutation = useMutation(
-    async () => {
-      return await lit.authenticate();
-    },
-    {
-      onMutate: () => {
-        trackEvent("Lit Authenticate Clicked", fromAuthSteps);
-      },
-    }
-  );
-
-  const isCeramicConnected =
-    ceramic.isComposeResourcesSigned && ceramic.isSessionValid;
 
   return (
     <div className="mb-2 rounded-3xl">
@@ -117,41 +89,36 @@ export function AuthSteps() {
           index={2}
           title="Enable storage of pages"
           description="Allows you to persist data on the decentralized storage network. You will become the owner of your data which is stored immutably."
-          completed={isConnected && isCeramicConnected}
+          completed={isConnected && compose.isAuthenticated}
         >
           <Button
-            disabled={
-              (ceramic.isComposeResourcesSigned && isCeramicConnected) ||
-              !isConnected
-            }
-            onClick={() => authenticateCeramicMutation.mutate()}
+            disabled={compose.isAuthenticated || !isConnected}
+            onClick={() => compose.authenticate.mutate()}
           >
-            {authenticateCeramicMutation.isLoading ? (
+            {compose.authenticate.isLoading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
               <Wallet className="mr-2 h-4 w-4" />
             )}
-            {authenticateCeramicMutation.isLoading
-              ? "Waiting..."
-              : "Sign message"}
+            {compose.authenticate.isLoading ? "Waiting..." : "Sign message"}
           </Button>
         </AuthStep>
         <AuthStep
           index={3}
           title="Enable private pages"
           description="This ensures that even though your data is stored on the blockchain, it remains private and secure, with only authorized users having access to it."
-          completed={isConnected && lit.isLitAuthenticated}
+          completed={isConnected && lit.isAuthenticated}
         >
           <Button
-            disabled={lit.isLitAuthenticated || !isConnected}
-            onClick={() => authenticateLitMutation.mutate()}
+            disabled={lit.isAuthenticated || !isConnected}
+            onClick={() => lit.authenticate.mutate()}
           >
-            {authenticateLitMutation.isLoading ? (
+            {lit.authenticate.isLoading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
               <Wallet className="mr-2 h-4 w-4" />
             )}
-            {authenticateLitMutation.isLoading ? "Waiting..." : "Sign message"}
+            {lit.authenticate.isLoading ? "Waiting..." : "Sign message"}
           </Button>
         </AuthStep>
       </ul>

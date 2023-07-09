@@ -4,6 +4,7 @@ import {
   uint8arrayToString,
 } from "@lit-protocol/lit-node-client";
 import { AccsDefaultParams } from "@lit-protocol/types";
+import { addDays } from "date-fns";
 
 export const litClient = new LitNodeClient({
   debug: false,
@@ -78,18 +79,12 @@ export function getAddressOwnerAcl(address: string): AccsDefaultParams {
   };
 }
 
-function daysInFuture(days: number) {
-  const date = new Date();
-  date.setDate(date.getDate() + days);
-  return date;
-}
-
-export async function authenticateLit(litClient: LitNodeClient) {
+export async function authenticate() {
   await litClient.connect();
 
   return await checkAndSignAuthMessage({
     chain: litChain,
-    expiration: daysInFuture(7).toISOString(),
+    expiration: addDays(new Date(), 7).toISOString(),
   });
 }
 
@@ -102,7 +97,7 @@ export async function storeEncryptionKey(
 }> {
   await litClient.connect();
 
-  const authSig = await authenticateLit(litClient);
+  const authSig = await authenticate();
 
   const exportedKey = new Uint8Array(
     await crypto.subtle.exportKey("raw", symmetricEncryptionKey)
@@ -127,7 +122,7 @@ export async function getStoredEncryptionKey(
 ) {
   await litClient.connect();
 
-  const authSig = await authenticateLit(litClient);
+  const authSig = await authenticate();
 
   const encryptionKey = await litClient.getEncryptionKey({
     accessControlConditions: [getAddressOwnerAcl(userAddress)],

@@ -1,26 +1,21 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { trackEvent } from "../lib/analytics";
-import { authenticateLit, getIsLitAuthenticated, litClient } from "../lib/lit";
+import { authenticate, getIsLitAuthenticated, litClient } from "../lib/lit";
+import { useState } from "react";
 
 export function useLit() {
-  async function authenticate() {
-    await authenticateLit(litClient);
-    trackEvent("Lit Authenticated");
-    isLitAuthenticatedQuery.refetch();
-  }
+  const [isAuthenticated, setIsAuthenticated] = useState(getIsLitAuthenticated);
 
-  const isLitAuthenticatedQuery = useQuery(
-    ["LIT", "AUTHENTICATED"],
-    async () => {
-      return getIsLitAuthenticated();
+  const authenticationMutation = useMutation({
+    mutationFn: async () => await authenticate(),
+    onSuccess: () => {
+      setIsAuthenticated(true);
+      trackEvent("Lit Authenticated");
     },
-    { cacheTime: 0 }
-  );
+  });
 
   return {
-    authenticate,
-    isLitAuthenticated: isLitAuthenticatedQuery.data ?? false,
-    isLoading: isLitAuthenticatedQuery.isLoading,
-    litClient,
+    authenticate: authenticationMutation,
+    isAuthenticated,
   };
 }
