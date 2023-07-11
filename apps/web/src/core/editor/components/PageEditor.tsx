@@ -134,11 +134,11 @@ export function PageEditor({ pageId }: PageEditorProps) {
     .find((error) => error !== undefined);
 
   return (
-    <div>
+    <div className="px-8">
       {!user?.isAuthenticated && (
-        <div>
+        <div className="fixed top-4">
           <div className="bg-yellow-100 text-yellow-500 inline-block text-sm px-2 py-1 rounded-sm">
-            You are not logged in. Changes will not be saved.
+            Changes will only be stored locally until you sign in
           </div>
         </div>
       )}

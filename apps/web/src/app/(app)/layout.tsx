@@ -6,15 +6,10 @@ import { Sidebar } from "../../components/Sidebar";
 export default function AppLayout({ children }: PropsWithChildren) {
   return (
     <div className={cn("flex min-h-screen")}>
-      <Sidebar className="fixed w-64" />
-      <div className="grow pt-4 pl-64">
-        <Header className="absolute right-0 top-0 p-4 z-10" />
-        <main
-          className={cn("relative m-auto h-full max-w-3xl px-4 flex flex-col")}
-        >
-          {children}
-        </main>
-      </div>
+      <Sidebar className="fixed w-64 z-10" />
+      <main className={cn("grow pl-64 relative h-full flex flex-col")}>
+        {children}
+      </main>
     </div>
   );
 }

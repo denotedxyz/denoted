@@ -8,6 +8,7 @@ import { Footer } from "./Footer";
 import { Logo } from "./Logo";
 
 import dynamic from "next/dynamic";
+import { ConnectKitButton } from "connectkit";
 
 const SidebarPageList = dynamic(
   () => import("./SidebarPageList").then((module) => module.SidebarPageList),
@@ -27,11 +28,7 @@ export function Sidebar({ className }: SidebarProps) {
       )}
     >
       <header>
-        <div className="flex justify-center">
-          <Link href={`/`}>
-            <Logo />
-          </Link>
-        </div>
+        <ConnectKitButton />
       </header>
       <nav className="w-full flex flex-col gap-4">
         <ul className="flex flex-col gap-6">
