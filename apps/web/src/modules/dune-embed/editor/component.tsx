@@ -112,7 +112,7 @@ export function DuneEmbedComponent({
             </PopoverTrigger>
             <PopoverContent
               align="end"
-              className="w-auto p-3 bg-gray-200 rounded-md bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-20 border border-gray-300 shadow-sm"
+              className="w-auto p-3 bg-zinc-200 rounded-md bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-20 border border-zinc-300 shadow-sm"
             >
               <DuneEmbedForm
                 onSubmit={onSubmit}
@@ -123,13 +123,13 @@ export function DuneEmbedComponent({
             </PopoverContent>
           </Popover>
           <iframe
-            className="w-full aspect-video border border-gray-100 rounded-sm"
+            className="w-full aspect-video border border-zinc-100 rounded-sm"
             src={src}
             allowFullScreen={true}
           />
         </div>
       ) : (
-        <div className="p-4 w-full bg-gray-50 rounded-md">
+        <div className="p-4 w-full bg-zinc-50 rounded-md">
           <DuneEmbedForm onSubmit={onSubmit} />
         </div>
       )}

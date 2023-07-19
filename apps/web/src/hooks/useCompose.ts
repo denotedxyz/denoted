@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { trackEvent } from "../lib/analytics";
 import { composeClient } from "../lib/compose";
+import { useComposeContext } from "../contexts/compose-context";
 
 export const LOCAL_STORAGE_KEYS = {
   DID:
@@ -29,10 +30,7 @@ type UseComposeResult = {
 
 export function useCompose(): UseComposeResult {
   const { address } = useAccount();
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    composeClient.did?.authenticated
-  );
-
+  const { isAuthenticated, setIsAuthenticated } = useComposeContext();
   useEffect(() => {
     async function run() {
       const storedSession = await getSession();

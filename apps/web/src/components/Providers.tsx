@@ -5,6 +5,8 @@ import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { WagmiConfig, createConfig } from "wagmi";
 import { mainnet } from "viem/chains";
 import { UserContextProvider } from "../contexts/user-context";
+import { ComposeContextProvider } from "../contexts/compose-context";
+import { LitContextProvider } from "../contexts/lit-context";
 
 const wagmiConfig = createConfig(
   getDefaultConfig({
@@ -23,7 +25,11 @@ export function Providers({ children }: React.PropsWithChildren) {
     <QueryClientProvider client={queryClient}>
       <WagmiConfig config={wagmiConfig}>
         <ConnectKitProvider>
-          <UserContextProvider>{children}</UserContextProvider>
+          <ComposeContextProvider>
+            <LitContextProvider>
+              <UserContextProvider>{children}</UserContextProvider>
+            </LitContextProvider>
+          </ComposeContextProvider>
         </ConnectKitProvider>
       </WagmiConfig>
     </QueryClientProvider>

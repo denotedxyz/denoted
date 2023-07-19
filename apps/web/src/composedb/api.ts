@@ -61,8 +61,6 @@ export class ComposeApiClient {
       throw new Error("Error creating page");
     }
 
-    console.log(result);
-
     return encryptedComposePageSchema.parse(result.data.createPage.document);
   }
 

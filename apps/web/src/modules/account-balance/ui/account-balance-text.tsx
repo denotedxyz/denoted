@@ -29,7 +29,7 @@ export function AccountBalanceText({
 
   if (accountBalanceQuery.isError) {
     console.log(accountBalanceQuery.error);
-    return <TextPill>{JSON.stringify(accountBalanceQuery.error)}</TextPill>;
+    return <TextPill>error</TextPill>;
   }
   const units = formatUnits(
     BigInt(accountBalanceQuery?.data?.balance),

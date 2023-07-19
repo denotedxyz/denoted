@@ -58,9 +58,9 @@ export function SidebarPageList() {
   );
 
   return (
-    <div className="flex flex-col gap-3">
-      <span className="mb-4 block text-sm text-gray-400">Pages</span>
-      <ul className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
+      <span className="m2-4 block text-sm text-zinc-400">Pages</span>
+      <ul className="flex flex-col gap-2">
         {pagesQuery.data?.map((page) => {
           const url = `/${page.localId}`;
 
@@ -70,8 +70,8 @@ export function SidebarPageList() {
                 href={url}
                 className={cn(
                   buttonVariants({ variant: "outline" }),
-                  "w-full justify-start truncate block",
-                  url === pathname && "border-gray-600"
+                  "w-full truncate justify-start"
+                  // url === pathname && "border-zinc-600"
                 )}
               >
                 {page.title.length > 0 ? page.title : "Untitled"}
@@ -80,7 +80,7 @@ export function SidebarPageList() {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="secondary"
-                    className="opacity-0 group-hover:opacity-100 absolute w-6 h-6 p-0 rounded-sm top-1/2 right-2 transform -translate-y-1/2"
+                    className="opacity-0 group-hover:opacity-100 transition absolute w-6 h-6 p-0 rounded-sm top-1/2 right-2 transform -translate-y-1/2"
                   >
                     <MoreVertical className="w-4 h-4" />
                   </Button>

@@ -10,12 +10,12 @@ const Popover = PopoverPrimitive.Root;
 const PopoverTrigger = PopoverPrimitive.Trigger;
 
 export const popoverVariants = cva(
-  "z-50 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none animate-in data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+  "z-50 rounded-md border p-4 text-popover-foreground shadow-md outline-none animate-in data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
   {
     variants: {
       variant: {
         glass:
-          "bg-gray-100 rounded-md bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-20 border border-gray-300 shadow-sm",
+          "bg-popover/80 border/20 rounded-md bg-clip-padding backdrop-filter backdrop-blur-md border shadow-sm",
       },
     },
     defaultVariants: {
@@ -33,7 +33,7 @@ const PopoverContent = React.forwardRef<
       ref={ref}
       align={align}
       sideOffset={sideOffset}
-      className={cn(popoverVariants(), className, "w-72")}
+      className={cn(popoverVariants(), "w-72", className)}
       {...props}
     />
   </PopoverPrimitive.Portal>

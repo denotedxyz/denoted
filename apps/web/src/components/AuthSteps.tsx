@@ -26,7 +26,7 @@ function AuthStep({
     <li className="flex items-start gap-4">
       <span
         className={cn(
-          "flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md  bg-gray-100 text-gray-500",
+          "flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md  bg-zinc-100 text-zinc-500",
           completed && "bg-green-500 text-white"
         )}
       >
@@ -41,8 +41,8 @@ function AuthStep({
       </span>
       <div className="flex flex-col items-start gap-4">
         <div className="gap-2">
-          <h2 className="font-medium text-gray-800">{title}</h2>
-          <p className="text-sm text-gray-500">{description}</p>
+          <h2 className="font-medium text-zinc-800">{title}</h2>
+          <p className="text-sm text-zinc-500">{description}</p>
         </div>
         {children}
       </div>
@@ -65,63 +65,61 @@ export function AuthSteps() {
   const lit = useLit();
 
   return (
-    <div className="mb-2 rounded-3xl">
-      <ul className="flex flex-col gap-12">
-        <AuthStep
-          index={1}
-          title="Connect wallet"
-          description="You need to connect your wallet in order to continue!"
-          completed={isConnected}
+    <ul className="flex flex-col gap-12">
+      <AuthStep
+        index={1}
+        title="Connect wallet"
+        description="You need to connect your wallet in order to continue!"
+        completed={isConnected}
+      >
+        <Button
+          disabled={isConnected}
+          onClick={() => connect({ connector: connectors[0] })}
         >
-          <Button
-            disabled={isConnected}
-            onClick={() => connect({ connector: connectors[0] })}
-          >
-            {isLoading ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Wallet className="mr-2 h-4 w-4" />
-            )}
-            {isLoading ? "Connecting..." : "Connect"}
-          </Button>
-        </AuthStep>
-        <AuthStep
-          index={2}
-          title="Enable storage of pages"
-          description="Allows you to persist data on the decentralized storage network. You will become the owner of your data which is stored immutably."
-          completed={isConnected && compose.isAuthenticated}
+          {isLoading ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Wallet className="mr-2 h-4 w-4" />
+          )}
+          {isLoading ? "Connecting..." : "Connect"}
+        </Button>
+      </AuthStep>
+      <AuthStep
+        index={2}
+        title="Enable storage of pages"
+        description="Allows you to persist data on the decentralized storage network. You will become the owner of your data which is stored immutably."
+        completed={isConnected && compose.isAuthenticated}
+      >
+        <Button
+          disabled={compose.isAuthenticated || !isConnected}
+          onClick={() => compose.authenticate.mutate()}
         >
-          <Button
-            disabled={compose.isAuthenticated || !isConnected}
-            onClick={() => compose.authenticate.mutate()}
-          >
-            {compose.authenticate.isLoading ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Wallet className="mr-2 h-4 w-4" />
-            )}
-            {compose.authenticate.isLoading ? "Waiting..." : "Sign message"}
-          </Button>
-        </AuthStep>
-        <AuthStep
-          index={3}
-          title="Enable private pages"
-          description="This ensures that even though your data is stored on the blockchain, it remains private and secure, with only authorized users having access to it."
-          completed={isConnected && lit.isAuthenticated}
+          {compose.authenticate.isLoading ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Wallet className="mr-2 h-4 w-4" />
+          )}
+          {compose.authenticate.isLoading ? "Waiting..." : "Sign message"}
+        </Button>
+      </AuthStep>
+      <AuthStep
+        index={3}
+        title="Enable private pages"
+        description="This ensures that even though your data is stored on the blockchain, it remains private and secure, with only authorized users having access to it."
+        completed={isConnected && lit.isAuthenticated}
+      >
+        <Button
+          disabled={lit.isAuthenticated || !isConnected}
+          onClick={() => lit.authenticate.mutate()}
         >
-          <Button
-            disabled={lit.isAuthenticated || !isConnected}
-            onClick={() => lit.authenticate.mutate()}
-          >
-            {lit.authenticate.isLoading ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Wallet className="mr-2 h-4 w-4" />
-            )}
-            {lit.authenticate.isLoading ? "Waiting..." : "Sign message"}
-          </Button>
-        </AuthStep>
-      </ul>
-    </div>
+          {lit.authenticate.isLoading ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Wallet className="mr-2 h-4 w-4" />
+          )}
+          {lit.authenticate.isLoading ? "Waiting..." : "Sign message"}
+        </Button>
+      </AuthStep>
+    </ul>
   );
 }

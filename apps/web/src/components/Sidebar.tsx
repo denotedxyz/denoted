@@ -1,14 +1,14 @@
 "use client";
 
-import { buttonVariants } from "@denoted/ui/src/components/button";
-import { Compass, PenBox } from "lucide-react";
-import Link from "next/link";
 import { cn } from "@denoted/ui";
+import { buttonVariants } from "@denoted/ui/src/components/button";
+import { Compass } from "lucide-react";
+import Link from "next/link";
 import { Footer } from "./Footer";
-import { Logo } from "./Logo";
 
 import dynamic from "next/dynamic";
-import { ConnectKitButton } from "connectkit";
+import { useUser } from "../contexts/user-context";
+import { AuthenticateButton } from "./AuthenticateButton";
 
 const SidebarPageList = dynamic(
   () => import("./SidebarPageList").then((module) => module.SidebarPageList),
@@ -20,31 +20,23 @@ type SidebarProps = {
 };
 
 export function Sidebar({ className }: SidebarProps) {
+  const user = useUser();
   return (
     <aside
       className={cn(
-        "flex h-full flex-col items-start gap-6 bg-gray-50 p-4",
+        "h-full flex flex-col border-r border-zinc-100 p-4",
         className
       )}
     >
-      <header>
-        <ConnectKitButton />
+      <header className="mb-4 flex justify-between">
+        <AuthenticateButton />
       </header>
       <nav className="w-full flex flex-col gap-4">
-        <ul className="flex flex-col gap-6">
-          <li className="flex flex-col gap-3">
-            <Link
-              href={{
-                pathname: "/create",
-              }}
-              className={buttonVariants()}
-            >
-              <PenBox className="mr-2 h-4 w-4" />
-              Create page
-            </Link>
+        <ul>
+          <li>
             <Link
               href="/explore"
-              className={buttonVariants({ variant: "secondary" })}
+              className={cn(buttonVariants({ variant: "secondary" }), "w-full")}
             >
               <Compass className="mr-2 h-4 w-4" />
               Explore

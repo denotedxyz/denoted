@@ -569,7 +569,7 @@ function useDraggableBlockMenu(
         />
       </div>
       <div
-        className="absolute pointer-events-none h-1 bg-gray-300 opacity-0 left-0 top-0 will-change-transform"
+        className="absolute pointer-events-none h-1 bg-zinc-300 opacity-0 left-0 top-0 will-change-transform"
         ref={targetLineRef}
       />
     </>,

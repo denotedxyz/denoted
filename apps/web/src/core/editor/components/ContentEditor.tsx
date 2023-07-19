@@ -105,7 +105,7 @@ export function ContentEditor({ onChange }: ContentEditorProps) {
             />
           }
           placeholder={
-            <p className="absolute top-5 left-8 text-gray-300 m-0 select-none pointer-events-none">
+            <p className="absolute top-5 left-8 text-zinc-300 m-0 select-none pointer-events-none">
               Use '/' for commands
             </p>
           }

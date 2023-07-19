@@ -27,10 +27,10 @@ export function InitialPageRedirect() {
     },
   });
 
-  const pages = pagesQuery.data ?? [];
+  const { data: pages = [], isLoading } = pagesQuery;
 
   useEffect(() => {
-    if (isRedirectingRef.current) {
+    if (isRedirectingRef.current || isLoading) {
       return;
     }
 
@@ -45,7 +45,7 @@ export function InitialPageRedirect() {
         router.push(`/${page.localId}`);
       }
     }
-  }, [pages]);
+  }, [pages, isLoading]);
 
   return null;
 }

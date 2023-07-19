@@ -103,10 +103,10 @@ export function FloatingMenu({ editor }: FloatingMenuComponentProps) {
     <div
       className={cn(
         popoverVariants(),
-        "flex items-center justify-between gap-1 p-0"
+        "flex items-center justify-between gap-1 p-0 z-50"
       )}
     >
-      <div className="p-1 gap-1 border-r-[1px] border-gray-300 flex">
+      <div className="p-1 gap-1 border-r-[1px] border-zinc-300 flex">
         <IconButton
           aria-label="Format text as bold"
           active={state.isBold}

@@ -139,10 +139,7 @@ export function AccountBalanceComponent({
           <TextPill>config</TextPill>
         )}
       </PopoverTrigger>
-      <PopoverContent
-        align="start"
-        className="bg-gray-100 rounded-md bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-20 border border-gray-300 shadow-sm"
-      >
+      <PopoverContent align="start">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField

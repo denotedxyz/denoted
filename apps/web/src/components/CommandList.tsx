@@ -84,7 +84,7 @@ export const CommandList = forwardRef<CommandListHandle, CommandListProps>(
 
     if (props.items.length === 0) {
       return (
-        <div className="w-64 overflow-hidden rounded-2xl bg-gray-100">
+        <div className="w-64 overflow-hidden rounded-2xl bg-zinc-100">
           <p className="w-full px-3 py-2 text-left">no result</p>
         </div>
       );
@@ -96,7 +96,7 @@ export const CommandList = forwardRef<CommandListHandle, CommandListProps>(
           {props.items.map((item) => {
             return (
               <div key={item.name} className="border-t first:border-none">
-                <p className="px-3 py-2 text-xs text-gray-500">{item.name}</p>
+                <p className="px-3 py-2 text-xs text-zinc-500">{item.name}</p>
                 <div>
                   {item.items.map((item) => {
                     const index = allCommands
@@ -136,20 +136,20 @@ const CommandItemButton = <T extends Record<string, string>>({
   return (
     <button
       className={cn(
-        "flex w-full items-center gap-3 border-t border-gray-50 px-3 py-2 text-left hover:bg-gray-100",
-        index === selectedIndex && "bg-gray-100"
+        "flex w-full items-center gap-3 border-t border-zinc-50 px-3 py-2 text-left hover:bg-zinc-100",
+        index === selectedIndex && "bg-zinc-100"
       )}
       onClick={() => onSelect(index)}
     >
       {item.icon ? (
         <Image {...item.icon} width={24} height={24} alt={item.title} />
       ) : (
-        <div className="h-[24px] w-[24px] rounded-sm bg-gray-100" />
+        <div className="h-[24px] w-[24px] rounded-sm bg-zinc-100" />
       )}
       <div className="flex flex-col">
         <p>{item.title}</p>
         {item.description && (
-          <p className="text-xs text-gray-500">{item.description}</p>
+          <p className="text-xs text-zinc-500">{item.description}</p>
         )}
       </div>
     </button>

@@ -68,7 +68,7 @@ export class PageRepository implements IPageRepository<EncryptedPage> {
       id: page.remoteId!,
       localId: page.localId!,
       title: page.title,
-      content: page.content,
+      content: page.content ?? "",
       createdAt: page.createdAt.toISOString(),
       updatedAt: page.updatedAt.toISOString(),
       deletedAt: page.deletedAt ? page.deletedAt.toISOString() : null,

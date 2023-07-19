@@ -19,8 +19,8 @@ export function SlashMenuItem({
       key={option.key}
       tabIndex={-1}
       className={cn(
-        "cursor-pointer flex w-full items-center gap-3 border-t border-gray-300 border-opacity-20 px-3 py-2 text-lef bg-gray-100 hover:bg-gray-300 hover:bg-opacity-20 bg-opacity-20",
-        isSelected && "bg-gray-300 bg-opacity-20"
+        "cursor-pointer flex w-full items-center gap-3 border-t border-zinc-300 border-opacity-20 px-3 py-2 text-left hover:bg-zinc-300 hover:bg-opacity-20 bg-opacity-20",
+        isSelected && "bg-zinc-300 bg-opacity-20"
       )}
       ref={option.setRefElement}
       role="option"
@@ -37,7 +37,7 @@ export function SlashMenuItem({
       <div className="flex flex-col">
         <p>{option.title}</p>
         {option.description && (
-          <p className="text-xs text-gray-500">{option.description}</p>
+          <p className="text-xs text-zinc-500">{option.description}</p>
         )}
       </div>
     </li>

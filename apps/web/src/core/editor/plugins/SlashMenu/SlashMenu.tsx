@@ -38,7 +38,7 @@ import {
 import { useCallback, useMemo, useState } from "react";
 import * as ReactDOM from "react-dom";
 
-import { Card, CardContent } from "@denoted/ui";
+import { Card, CardContent, cn, popoverVariants } from "@denoted/ui";
 import groupBy from "lodash.groupby";
 import { CommandMenuOption } from "../../../modules/define";
 import { SlashMenuItem } from "./components/SlashMenuItem";
@@ -229,14 +229,19 @@ export function SlashMenuPlugin(props: {
           );
 
           return ReactDOM.createPortal(
-            <Card className="w-64 mt-6 bg-gray-200 rounded-md bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-20 border border-gray-300 shadow-sm">
+            <Card
+              className={cn(
+                popoverVariants({ variant: "glass" }),
+                "p-0 w-64 mt-6"
+              )}
+            >
               <CardContent className="p-0">
                 <ul className="list-none m-0 p-0 max-h-80 overflow-y-scroll scrollbar-hide">
                   {Object.entries(groupedOptions).map(
                     ([group, groupOptions]) => {
                       return (
                         <li key={group}>
-                          <h2 className="px-3 py-2 text-xs text-gray-600 text-opacity-50">
+                          <h2 className="px-3 py-2 text-xs text-zinc-600 text-opacity-50">
                             {group}
                           </h2>
                           <ul className="list-none m-0 p-0">

@@ -13,10 +13,10 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
       <button
         {...props}
         className={cn(
-          "p-1.5 rounded-sm text-gray-900",
+          "p-1.5 rounded-sm text-zinc-900",
           props.disabled && "opacity-50",
           !props.disabled &&
-            "cursor-pointer hover:bg-gray-400 hover:bg-opacity-10",
+            "cursor-pointer hover:bg-zinc-400 hover:bg-opacity-10",
           className
         )}
       >

@@ -31,7 +31,7 @@ export function EmailSignup() {
         }}
       >
         <Form.Field name="email" className="flex flex-1 flex-col">
-          <Form.Message match="typeMismatch" className="mb-2 text-gray-500">
+          <Form.Message match="typeMismatch" className="mb-2 text-zinc-500">
             please provide a valid email
           </Form.Message>
           <Form.Control asChild>

@@ -229,7 +229,7 @@ function FloatingLinkEditor({
             href={linkUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="truncate max-w-[10rem] text-gray-700 font-normal text-base"
+            className="truncate max-w-[10rem] text-zinc-700 font-normal text-base"
           >
             {linkUrl}
           </a>

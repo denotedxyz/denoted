@@ -113,7 +113,7 @@ class PageService {
       updatedAt: new Date(),
     });
 
-    if (this.user) {
+    if (this.user && this.user.isAuthenticated) {
       if (!updatedPage.remoteId) {
         throw new Error("Page remoteId not found");
       }
@@ -145,7 +145,7 @@ class PageService {
       return cachedPage;
     }
 
-    if (this.user) {
+    if (this.user && this.user.isAuthenticated) {
       const pages = await this.pageRepository.getAll();
 
       const remotePage = pages.find((page) => page.localId === id);

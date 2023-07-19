@@ -134,26 +134,29 @@ export function PageEditor({ pageId }: PageEditorProps) {
     .find((error) => error !== undefined);
 
   return (
-    <div className="px-8">
-      {!user?.isAuthenticated && (
-        <div className="fixed top-4">
-          <div className="bg-yellow-100 text-yellow-500 inline-block text-sm px-2 py-1 rounded-sm">
+    <div>
+      <div className="fixed top-4 flex gap-4 px-8 z-10">
+        <div className="backdrop-filter backdrop-blur-md bg-opacity-80 bg-zinc-200 text-zinc-500 inline-block text-sm px-2 py-1 rounded-sm">
+          {isSaving && "Saving..."}
+          {!isSaving && isUpdateSuccess && "Saved"}
+          {!isSaving && isUpdateError && (
+            <span>
+              {updateError instanceof Error
+                ? updateError.message
+                : "Unknown error"}
+            </span>
+          )}
+        </div>
+        {!user?.isAuthenticated && (
+          <div className="backdrop-filter backdrop-blur-md bg-opacity-80 bg-yellow-100 text-yellow-500 inline-block text-sm px-2 py-1 rounded-sm">
             Changes will only be stored locally until you sign in
           </div>
-        </div>
-      )}
-      <div className="bg-gray-100 text-gray-500 inline-block text-sm px-2 py-1 rounded-sm">
-        {isSaving && "Saving..."}
-        {!isSaving && isUpdateSuccess && "Saved"}
-        {!isSaving && isUpdateError && (
-          <span>
-            {updateError instanceof Error
-              ? updateError.message
-              : "Unknown error"}
-          </span>
         )}
       </div>
-      <div key={pageId} className="flex flex-col grow gap-8 pt-14">
+      <div
+        key={pageId}
+        className="flex flex-col max-w-4xl mx-auto grow gap-8 pt-14"
+      >
         <LexicalComposer initialConfig={initialConfig}>
           <TitleEditor
             onChange={debouncedUpdateTitle}
