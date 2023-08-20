@@ -1,10 +1,11 @@
 import { nanoid } from "nanoid";
-import { PageCacheRepository, PageRepository } from "./repository";
-import { EncryptedPage, Page, PageInput } from "./schema";
+import { PageCacheRepository, PageRepository } from "./page-repository";
+import { EncryptedPage, Page, PageInput } from "./page-schema";
 
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import { Address } from "viem";
 import { ComposeApiClient } from "../../composedb/api";
+import { User } from "../../contexts/user-context";
 import { composeClient } from "../../lib/compose";
 import {
   decryptString,
@@ -13,7 +14,6 @@ import {
 } from "../../lib/crypto";
 import { litClient, storeEncryptionKey } from "../../lib/lit";
 import { importStoredEncryptionKey } from "./utils";
-import { User } from "../../contexts/user-context";
 
 class PageService {
   constructor(
@@ -22,6 +22,113 @@ class PageService {
     private readonly litClient: LitNodeClient,
     private readonly user: User
   ) {}
+
+  public async sync() {
+    if (!this.user) {
+      console.log(this.user);
+      throw new Error("No user");
+    }
+
+    if (!this.user.isAuthenticated) {
+      console.log(this.user);
+      throw new Error("User is not authenticated");
+    }
+
+    const [remotePages, localPages, deletedLocalPageIds] = await Promise.all([
+      this.pageRepository.getAll(),
+      this.pageCacheRepository.getAll(),
+      this.pageCacheRepository.getDeletedPageIds(),
+    ]);
+
+    const remotePagesMap = new Map<string, EncryptedPage>();
+    remotePages.forEach((page) => remotePagesMap.set(page.remoteId!, page));
+
+    const localPagesMap = new Map<string, Page>();
+    localPages.forEach((page) => localPagesMap.set(page.localId!, page));
+
+    for (const remotePage of remotePages) {
+      const localPage = localPagesMap.get(remotePage.localId ?? "");
+
+      // 1. if a page is deleted locally, delete it from the remote server
+      const isDeletedLocally =
+        localPage && localPage.localId && !remotePage.deletedAt
+          ? deletedLocalPageIds.includes(localPage.localId)
+          : false;
+
+      if (isDeletedLocally) {
+        await this.pageRepository.delete(remotePage.remoteId!);
+        continue;
+      }
+
+      // 2. if a page is deleted remotely, delete it from the local database
+      const isDeletedRemotely =
+        remotePage.deletedAt && !localPage?.deletedAt ? true : false;
+
+      if (isDeletedRemotely) {
+        await this.pageCacheRepository.delete(remotePage.localId!);
+        continue;
+      }
+
+      // 3. if a page exists in both local and remote storage, compare the timestamps
+      if (localPage && remotePage) {
+        if (localPage.updatedAt > remotePage.updatedAt) {
+          // If the local page is newer, push it to the remote server
+          await this.pageRepository.update(remotePage.remoteId!, {
+            ...localPage,
+            encryptedKey: remotePage.encryptedKey,
+          });
+          continue;
+        }
+
+        if (localPage.updatedAt < remotePage.updatedAt) {
+          // If the remote page is newer, save it to the local database
+          await this.pageCacheRepository.update(localPage.localId!, {
+            ...remotePage,
+            key: localPage.key,
+          });
+          continue;
+        }
+      }
+
+      // 4. if a page only exists in remote storage, save it to the local database
+      if (!localPage && remotePage) {
+        const storedEncryptionKey = await importStoredEncryptionKey(
+          remotePage.encryptedKey,
+          this.user.address,
+          this.litClient
+        );
+
+        const page = await this.decrypt(remotePage, storedEncryptionKey);
+
+        await this.pageCacheRepository.update(remotePage.localId!, page);
+        continue;
+      }
+    }
+
+    for (const localPage of localPages) {
+      const remotePage = remotePagesMap.get(localPage.remoteId ?? "");
+
+      // 5. if a page only exists in local storage, push it to the remote server
+      if (!remotePage) {
+        if (!localPage.key) {
+          throw new Error("Page key not found");
+        }
+
+        const encryptedPage = await this.encrypt(
+          localPage,
+          this.user.address,
+          localPage.key
+        );
+
+        const { remoteId } = await this.pageRepository.create(encryptedPage);
+
+        await this.pageCacheRepository.update(localPage.localId!, {
+          ...localPage,
+          remoteId,
+        });
+      }
+    }
+  }
 
   async create(input?: PageInput): Promise<Page> {
     const id = nanoid(8);
@@ -55,7 +162,7 @@ class PageService {
           remoteId,
         });
       } catch (error) {
-        console.log("Error creating page", error);
+        console.error("Error creating page", error);
       }
     }
 
@@ -171,7 +278,7 @@ class PageService {
       return page;
     }
 
-    throw new Error("Page not found");
+    throw new Error("Page not found with id " + id);
   }
 
   async getAll() {

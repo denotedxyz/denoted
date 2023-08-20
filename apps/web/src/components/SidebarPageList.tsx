@@ -11,15 +11,17 @@ import {
   cn,
 } from "@denoted/ui";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { MoreVertical, Trash } from "lucide-react";
+import { MoreVertical, RefreshCw, Trash } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { usePageService } from "../core/hooks/use-page-service";
+import { useUser } from "../contexts/user-context";
 
 export function SidebarPageList() {
   const pathname = usePathname();
   const router = useRouter();
 
+  const user = useUser();
   const pageService = usePageService();
 
   const pagesQuery = useQuery({
@@ -57,9 +59,29 @@ export function SidebarPageList() {
     }
   );
 
+  const syncPagesMutation = useMutation({
+    mutationFn: () => pageService.sync(),
+  });
+
   return (
     <div className="flex flex-col gap-4">
-      <span className="m2-4 block text-sm text-zinc-400">Pages</span>
+      <div className="flex justify-between items-center">
+        <span className="text-sm text-zinc-400">Pages</span>
+        {user?.isAuthenticated && (
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => syncPagesMutation.mutate()}
+          >
+            <RefreshCw
+              className={cn(
+                "h-3.5 w-3.5",
+                syncPagesMutation.isLoading && "animate-spin"
+              )}
+            />
+          </Button>
+        )}
+      </div>
       <ul className="flex flex-col gap-2">
         {pagesQuery.data?.map((page) => {
           const url = `/${page.localId}`;

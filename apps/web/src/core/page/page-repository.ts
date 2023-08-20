@@ -1,5 +1,5 @@
-import { createStore, del, get, set, values } from "idb-keyval";
-import { EncryptedPage, Page } from "./schema";
+import { createStore, del, get, keys, set, values } from "idb-keyval";
+import { EncryptedPage, Page } from "./page-schema";
 import { ComposeApiClient } from "../../composedb/api";
 import { EncryptedComposePage } from "../../composedb/schema";
 
@@ -24,6 +24,11 @@ export class PageCacheRepository implements IPageRepository<Page> {
 
   async getAll(): Promise<Page[]> {
     const pages = await values<Page>(pageStore);
+    return pages;
+  }
+
+  async getDeletedPageIds() {
+    const pages = await keys(pageArchiveStore);
     return pages;
   }
 

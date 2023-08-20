@@ -137,8 +137,6 @@ export function PageEditor({ pageId }: PageEditorProps) {
     <div>
       <div className="fixed top-4 flex gap-4 px-8 z-10">
         <div className="backdrop-filter backdrop-blur-md bg-opacity-80 bg-zinc-200 text-zinc-500 inline-block text-sm px-2 py-1 rounded-sm">
-          {isSaving && "Saving..."}
-          {!isSaving && isUpdateSuccess && "Saved"}
           {!isSaving && isUpdateError && (
             <span>
               {updateError instanceof Error
